@@ -1,17 +1,18 @@
 {
-  "cnpj": "06123247000181",
+  "cnpj": "34075739000184",
   "razao_social": "N/A",
   "classificacao": "APROVADO",
-  "score": 100,
+  "score": 75,
   "criterios": {
     "positivos": [
       "Situação cadastral ATIVA.",
       "CNAE principal no setor de Educação (85.xx).",
-      "Capital social de R$ 41.430.523,00, classificando-se na faixa de pontuação máxima.",
-      "Empresa fundada em 2004, com mais de 2 anos de atividade.",
-      "Nenhuma restrição ou ponto de atenção grave foi identificado."
+      "Capital Social elevado (R$ 3.600.408.131,00), enquadrado na faixa superior, contribuindo com",
+      "Tempo de atividade superior a 55 anos, demonstrando solidez."
     ],
-    "negativos": []
+    "negativos": [
+      "Ausência de informações explícitas sobre restrições cadastrais no JSON fornecido, requerendo verificação adicional."
+    ]
   },
-  "recomendacao": "Com um score perfeito de 100, a empresa CETTAA EDUCACIONAL LTDA (Unibta) demonstra excelente saúde financeira e operacional, com um perfil de risco extremamente baixo. É fortemente recomendada para qualquer tipo de parceria, investimento ou transação."
+  "recomendacao": "A empresa apresenta um perfil robusto e foi aprovada. Recomenda-se prosseguir com o relacionamento, mas com diligência adicional nos pontos de atenção mencionados na análise de negócio (mudanças administrativas e verificação de restrições)."
 }
