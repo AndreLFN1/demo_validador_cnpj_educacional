@@ -3,6 +3,7 @@
 webbundles
 .env
 Teste Prático - Analista de IA (Multiagentes).pdf
+.gemini/
 
 # Python
 __pycache__/
