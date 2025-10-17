@@ -1,0 +1,12 @@
+Leia os dados da empresa e a análise de negócio fornecidos no JSON.
+
+Com base nos 'criterios_scoring' presentes no JSON, calcule um score de 0 a 100. Para cada critério, utilize o 'peso' e as definições de 'positivo' e 'negativo'. Para o critério 'capital_social', utilize as 'faixas' definidas para atribuir a pontuação correspondente. Após calcular o score total, classifique o resultado como "APROVADO" (score >= 70), "ATENÇÃO" (score >= 40 e < 70) ou "REPROVADO" (score < 40).
+
+Retorne um JSON com as seguintes chaves:
+- "score": (int) O score calculado.
+- "classificacao": (str) A classificação final.
+- "pontos_positivos": (list of str) Uma lista de pontos que contribuíram positivamente para o score, com base nos critérios.
+- "pontos_negativos": (list of str) Uma lista de pontos que contribuíram negativamente para o score, com base nos critérios.
+- "recomendacao": (str) Uma breve recomendação baseada na classificação final.
+
+{response.json}

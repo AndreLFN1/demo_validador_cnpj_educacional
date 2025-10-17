@@ -1,0 +1,17 @@
+{
+  "cnpj": "32495498000440",
+  "razao_social": "N/A",
+  "classificacao": "APROVADO",
+  "score": 100,
+  "criterios": {
+    "positivos": [
+      "Empresa com status 'Ativa'.",
+      "Atividade principal é do setor de Educação (CNAE 85.xx).",
+      "Capital social de R$ 48.600.000,00 é considerado muito forte.",
+      "Empresa ativa há mais de 3 anos.",
+      "Nenhuma restrição significativa identificada nos dados fornecidos."
+    ],
+    "negativos": []
+  },
+  "recomendacao": "A empresa demonstra um perfil financeiro e operacional muito sólido, sendo altamente recomendada para parceria."
+}

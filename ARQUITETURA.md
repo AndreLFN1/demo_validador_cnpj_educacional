@@ -102,46 +102,50 @@ else:
 Python 3.11+
 ├── requests       # Consultar API CNPJA
 ├── python-dotenv  # Variáveis de ambiente (.env)
-└── (opcional) openai  # Se usar LLM
+└── google-generativeai # Para usar o Gemini 2.5 Pro
 ```
 
 ### APIs Utilizadas
 1. **CNPJA (Gratuita)**: `https://open.cnpja.com/office/{cnpj}`
-2. **OpenAI (Opcional)**: GPT-4o-mini para análises textuais
+2. **Google Gemini (Principal)**: Gemini 2.5 Pro para análises multiagentes.
 
 ---
 
-## 5. Estrutura do Projeto (MVP Simples)
+## 5. Estrutura do Projeto (MVP Implementado)
 
 ```
 demonio/
-├── main.py                    # CLI principal
-├── validador_cnpj.py          # Valida dígitos verificadores
-├── analise_cnpj.py            # Lógica dos 3 agentes
-├── config_cnae.json           # Lista CNAEs educação
-├── requirements.txt           # Dependências
-├── .env                       # API keys (não commitar!)
+├── main.py                    # CLI principal, orquestra os agentes
+├── validador_cnpj.py          # Valida dígitos verificadores do CNPJ
+├── analise_cnpj.py            # Contém a lógica dos 3 agentes (Cadastral, Negócio, Scoring)
+├── config/
+│   ├── agente_negocio_cnpj.txt  # Prompt para o Agente de Negócio (Gemini)
+│   ├── agente_scoring_cnpj.txt  # Prompt para o Agente de Scoring (Gemini)
+│   └── cnae_educacao.json       # Lista de CNAEs de educação válidos
+├── requirements.txt           # Dependências do projeto
+├── .env                       # Variáveis de ambiente (API keys, modelo LLM)
 ├── .gitignore
-├── ARQUITETURA_SIMPLES.md     # Este arquivo
+├── ARQUITETURA.md             # Este arquivo
 └── README.md                  # Como executar
 ```
 
-**Apenas 3 arquivos Python!** Simples de entender e manter.
-
 ---
 
-## 6. Fluxo de Execução
+## 6. Fluxo de Execução (Implementado)
 
-```
-1. Usuário executa: python main.py
-2. Sistema pede: "Digite o CNPJ:"
-3. Valida CNPJ (dígitos verificadores)
-4. Consulta API CNPJA → pega dados JSON
-5. Agente Cadastral: extrai dados importantes
-6. Agente Negócio: aplica 5 critérios
-7. Agente Scoring: calcula pontos e classifica
-8. Mostra resultado na tela + salva JSON
-```
+1. Usuário executa: `python main.py`
+2. Sistema pede: "Digite o CNPJ:" (ou usa CNPJ fixo para testes)
+3. `validador_cnpj.py`: Valida o CNPJ (dígitos verificadores).
+4. `analise_cnpj.py` (Agente Cadastral): Consulta API CNPJA → pega dados JSON da empresa.
+5. `analise_cnpj.py` (Agente de Negócio):
+   - Carrega prompt de `agente_negocio_cnpj.txt` e dados de `cnae_educacao.json`.
+   - Envia dados da empresa e contexto para o Google Gemini (`LLM_MODEL` do `.env`).
+   - Gemini retorna análise de negócio (pontos positivos, negativos, atenção).
+6. `analise_cnpj.py` (Agente de Scoring):
+   - Carrega prompt de `agente_scoring_cnpj.txt`.
+   - Envia dados da empresa e análise de negócio para o Google Gemini (`LLM_MODEL` do `.env`).
+   - Gemini calcula score (0-100) e classifica (APROVADO/ATENÇÃO/REPROVADO).
+7. `main.py`: Mostra resultado formatado na tela e salva um JSON (`resultado.json`).
 
 **Tempo total:** ~2 minutos
 
@@ -186,30 +190,20 @@ Recomendação: Aprovar parceria com verificação padrão de documentos.
 
 ---
 
-## 8. Implementação: Decisão Sobre LLM
+## 8. Implementação: Uso de LLM (Google Gemini 2.5 Pro)
 
-### Opção A: MVP SEM LLM (Recomendado)
-**Agentes = Funções Python com regras if/else**
+A decisão é integrar um LLM para que os agentes tomem decisões de forma não determinística, conforme o requisito do projeto.
 
-✅ Vantagens:
-- Zero custo
-- Rápido (sem API externa)
-- Você controla 100% da lógica
-- Resultado previsível
-
-📝 Na entrevista você explica:
-> "Implementei arquitetura multi-agente onde cada módulo tem responsabilidade específica. Para MVP usei regras de negócio. Numa v2, posso adicionar LLMs para análises mais sofisticadas."
-
-### Opção B: MVP COM 1 Agente LLM
-**1 agente usa GPT, outros 2 usam regras**
+### Provedor Escolhido: Google Gemini 2.5 Pro
 
 ✅ Vantagens:
-- Demonstra integração com IA
-- Análises textuais mais ricas
+- Acesso disponível (fornecido pelo usuário).
+- Modelo de alta capacidade para análises complexas.
+- Permite a implementação de agentes "de fato", com raciocínio e geração de texto.
 
-⚠️ Requer:
-- Conta OpenAI ($5 grátis)
-- Mais complexidade
+### Abordagem Multiagente com LLM
+
+Cada agente (Negócio e Scoring) fará chamadas ao Gemini 2.5 Pro, passando os dados relevantes da empresa e um "prompt" (instrução) claro sobre a análise a ser realizada. O LLM retornará a análise e a decisão do agente.
 
 ---
 
@@ -227,15 +221,12 @@ Recomendação: Aprovar parceria com verificação padrão de documentos.
 
 ## 10. Custos Estimados
 
-### Cenário 1: Sem LLM
-**R$ 0/mês** ✅
-
-### Cenário 2: Com LLM (100 análises/mês)
+### Cenário com Google Gemini 2.5 Pro (100 análises/mês)
 ```
-GPT-4o-mini: ~$0.21/mês (R$ 1,05)
+Google Gemini 2.5 Pro: (Custos variam, verificar tabela de preços do Google AI Studio/Cloud)
 API CNPJA: Grátis (até 3 req/min)
 ──────────────────────────
-TOTAL: R$ 1,05/mês
+TOTAL: (Depende do uso do Gemini)
 ```
 
 **ROI:** Cada análise manual custa R$25. Automatizada custa R$0,01. **Economia de 99,96%!**

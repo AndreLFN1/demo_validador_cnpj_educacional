@@ -3,17 +3,15 @@ Validador de CNPJ:
 Verifica se um CNPJ é válido através dos dígitos verificadores.
 """
 
-def valida_cnpj(cnpj):
+def valida_cnpj(cnpj: str) -> str | None:
     """
-    Valida um CNPJ completo, com toda a lógica contida na própria função.
-    1. Limpa a formatação.
-    2. Verifica o tamanho e se todos os dígitos são iguais.
-    3. Calcula os dois dígitos verificadores e compara com os dígitos do CNPJ informado.
+    Valida um CNPJ e retorna o CNPJ limpo (apenas números) se for válido.
+    Caso contrário, retorna None.
     """
     cnpj_limpo = ''.join(filter(str.isdigit, cnpj))
 
     if len(cnpj_limpo) != 14 or cnpj_limpo in (c * 14 for c in "0123456789"):
-        return False
+        return None
 
     # --- Lógica de cálculo dos dígitos verificadores ---
     cnpj_base = cnpj_limpo[:12]
@@ -36,9 +34,13 @@ def valida_cnpj(cnpj):
     digitos_calculados = digito1 + digito2
     # --- Fim da lógica de cálculo ---
 
-    return digitos_informados == digitos_calculados
+    if digitos_informados == digitos_calculados:
+        return cnpj_limpo
+    else:
+        return None
 
-def formata_cnpj(cnpj):
+def formata_cnpj(cnpj: str) -> str:
     ''' Formata o CNPJ no padrão 00.000.000/0000-00 '''
+    # Esta função agora pode confiar que receberá um CNPJ limpo ou um formatado
     cnpj_limpo = ''.join(filter(str.isdigit, cnpj))
     return f"{cnpj_limpo[:2]}.{cnpj_limpo[2:5]}.{cnpj_limpo[5:8]}/{cnpj_limpo[8:12]}-{cnpj_limpo[12:]}"

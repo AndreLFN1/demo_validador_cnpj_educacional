@@ -1,0 +1,31 @@
+Leia o documento {response.json} e interprete as informações de acordo com o que se segue. Seu papel é fornecer uma análise qualitativa e interpretativa do perfil de negócio da empresa, identificando pontos fortes, fracos e de atenção que podem não ser capturados apenas por uma pontuação numérica.
+
+O JSON contém informações sobre CNPJ's de uma dada empresa. É importante verificar com cautela todas as informações no documento.
+
+**Critérios para Análise Qualitativa:**
+
+**Pontos Fortes (Positivos):**
+1.  Empresa ativa há mais de 2 anos.
+2.  Capital social compatível com operação educacional (utilize as faixas: >= R$500K: Muito Forte; R$100K-R$499K: Forte; R$50K-R$99K: Moderado).
+3.  Atividade principal relacionada a educação (verifique usando os códigos CNAE fornecidos em `cnae_educacao`).
+4.  Sem restrições cadastrais graves.
+
+**Pontos de Atenção (Requerem Análise Humana):**
+-   Empresa recém-criada (< 2 anos).
+-   Múltiplas mudanças societárias recentes.
+-   Inscrições estaduais bloqueadas.
+-   Capital social baixo para o porte (utilize as faixas: < R$50K: Baixo).
+
+**Pontos Fracos (Negativos):**
+-   Status inativo, suspenso ou baixado (já tratado por regra de desqualificação automática, mas mencione se relevante para contexto).
+-   Atividade principal incompatível com educação (mesmo após verificação com `cnae_educacao`).
+-   Restrições cadastrais múltiplas.
+
+Com base nos critérios acima, forneça uma análise estruturada em formato JSON com as seguintes chaves:
+-   "resumo_analise": (str) Um resumo conciso da análise de negócio.
+-   "pontos_fortes": (list of str) Uma lista de pontos fortes identificados.
+-   "pontos_fracos": (list of str) Uma lista de pontos fracos identificados.
+-   "pontos_atencao": (list of str) Uma lista de pontos que requerem atenção ou investigação adicional.
+-   "recomendacao_qualitativa": (str) Uma breve recomendação qualitativa baseada na análise.
+
+{response.json}
