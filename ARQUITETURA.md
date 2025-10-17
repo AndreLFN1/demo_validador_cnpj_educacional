@@ -251,6 +251,9 @@ TOTAL: (Depende do uso do Gemini)
 - Dados da Receita Federal atualizados
 - Boa documentação
 
+### Ferramenta de Desenvolvimento (BMAD)
+Este projeto foi desenvolvido com o auxílio da ferramenta BMAD (Base Model Agent Development), que facilitou a prototipagem e implementação da arquitetura multi-agente.
+
 ---
 
 ## Conclusão
