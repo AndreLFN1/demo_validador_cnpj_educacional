@@ -1,6 +1,6 @@
 .bmad-core
 .claude
-.gemini
+.gemini/commands/BMad
 Arquivo
 webbundles
 .env
