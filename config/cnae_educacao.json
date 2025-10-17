@@ -1,0 +1,158 @@
+{
+  "descricao": "CNAEs válidos para instituições de ensino - Principia",
+  "versao": "1.0",
+  "data_atualizacao": "2025-10-16",
+
+  "cnaes_principais": [
+    {
+      "codigo": "8511-2",
+      "codigo_formatado": "8511-2/00",
+      "descricao": "Educação infantil - creche",
+      "grupo": "Educação Infantil",
+      "prioridade": "alta"
+    },
+    {
+      "codigo": "8512-1",
+      "codigo_formatado": "8512-1/00",
+      "descricao": "Educação infantil - pré-escola",
+      "grupo": "Educação Infantil",
+      "prioridade": "alta"
+    },
+    {
+      "codigo": "8513-9",
+      "codigo_formatado": "8513-9/00",
+      "descricao": "Ensino fundamental",
+      "grupo": "Educação Básica",
+      "prioridade": "alta"
+    },
+    {
+      "codigo": "8520-1",
+      "codigo_formatado": "8520-1/00",
+      "descricao": "Ensino médio",
+      "grupo": "Educação Básica",
+      "prioridade": "alta"
+    },
+    {
+      "codigo": "8531-7",
+      "codigo_formatado": "8531-7/00",
+      "descricao": "Educação superior - graduação",
+      "grupo": "Ensino Superior",
+      "prioridade": "muito_alta"
+    },
+    {
+      "codigo": "8532-5",
+      "codigo_formatado": "8532-5/00",
+      "descricao": "Educação superior - graduação e pós-graduação",
+      "grupo": "Ensino Superior",
+      "prioridade": "muito_alta"
+    },
+    {
+      "codigo": "8533-3",
+      "codigo_formatado": "8533-3/00",
+      "descricao": "Educação superior - pós-graduação e extensão",
+      "grupo": "Ensino Superior",
+      "prioridade": "muito_alta"
+    },
+    {
+      "codigo": "8541-4",
+      "codigo_formatado": "8541-4/00",
+      "descricao": "Educação profissional de nível técnico",
+      "grupo": "Educação Profissional",
+      "prioridade": "alta"
+    },
+    {
+      "codigo": "8542-2",
+      "codigo_formatado": "8542-2/00",
+      "descricao": "Educação profissional de nível tecnológico",
+      "grupo": "Educação Profissional",
+      "prioridade": "alta"
+    },
+    {
+      "codigo": "8550-3",
+      "codigo_formatado": "8550-3/00",
+      "descricao": "Atividades de apoio à educação",
+      "grupo": "Serviços Educacionais",
+      "prioridade": "media"
+    },
+    {
+      "codigo": "8591-1",
+      "codigo_formatado": "8591-1/00",
+      "descricao": "Ensino de esportes",
+      "grupo": "Ensino Complementar",
+      "prioridade": "baixa"
+    },
+    {
+      "codigo": "8592-9",
+      "codigo_formatado": "8592-9/00",
+      "descricao": "Ensino de arte e cultura",
+      "grupo": "Ensino Complementar",
+      "prioridade": "baixa"
+    },
+    {
+      "codigo": "8593-7",
+      "codigo_formatado": "8593-7/00",
+      "descricao": "Ensino de idiomas",
+      "grupo": "Ensino Complementar",
+      "prioridade": "media"
+    },
+    {
+      "codigo": "8599-6",
+      "codigo_formatado": "8599-6/00",
+      "descricao": "Outras atividades de ensino não especificadas anteriormente",
+      "grupo": "Outros",
+      "prioridade": "media"
+    },
+    {
+      "codigo": "8610-1",
+      "codigo_formatado": "8610-1/01",
+      "descricao": "Atividades de atendimento hospitalar - exceto pronto-socorro e unidades para atendimento a urgências",
+      "grupo": "Saúde - Cursos Técnicos",
+      "prioridade": "baixa",
+      "nota": "Apenas se for instituição de ensino em saúde"
+    }
+  ],
+
+  "cnaes_secundarios_aceitaveis": [
+    "8550-3",
+    "8593-7",
+    "8599-6",
+    "7020-4",
+    "8230-0",
+    "9001-9",
+    "9003-5"
+  ],
+
+  "grupos_prioritarios": {
+    "muito_alta": ["Ensino Superior"],
+    "alta": ["Educação Básica", "Educação Infantil", "Educação Profissional"],
+    "media": ["Ensino Complementar", "Serviços Educacionais"],
+    "baixa": ["Outros"]
+  },
+
+  "validacao": {
+    "prefixo_educacao": "85",
+    "descricao_keywords": [
+      "educação",
+      "educacao",
+      "ensino",
+      "escola",
+      "colégio",
+      "colegio",
+      "faculdade",
+      "universidade",
+      "instituto",
+      "cursos",
+      "treinamento",
+      "capacitação",
+      "capacitacao"
+    ]
+  },
+
+  "notas": [
+    "CNAEs com prioridade 'muito_alta' são ideais para a Principia",
+    "CNAEs com prioridade 'alta' são bons candidatos",
+    "CNAEs com prioridade 'media' requerem análise adicional",
+    "CNAEs com prioridade 'baixa' podem ser aceitos se outros critérios forem muito positivos",
+    "CNAEs fora do grupo 85.xx devem ser rejeitados automaticamente, exceto se tiverem CNAE secundário válido"
+  ]
+}
