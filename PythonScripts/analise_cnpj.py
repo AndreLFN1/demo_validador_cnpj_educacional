@@ -2,13 +2,13 @@ import os
 import json
 import requests
 from dotenv import load_dotenv
-import google.generativeai as genai # Import para o Gemini
+import google.generativeai as genai
 
-# --- Funções de Interação com Gemini ---
+# Funções de Interação com Gemini
 
 def inicializar_gemini():
     """
-    Configura a API Key do Gemini.
+    Inicializa a API do Google Gemini carregando a chave de API das variáveis de ambiente.
     """
     load_dotenv()
     gemini_api_key = os.getenv("GEMINI_API_KEY")
@@ -20,28 +20,19 @@ def inicializar_gemini():
 
 def interagir_com_gemini(prompt: str, dados_contexto: dict) -> str | None:
     """
-    Envia um prompt e dados de contexto para o Gemini e retorna a resposta.
+    Envia um prompt e dados contextuais para o modelo Gemini e retorna sua resposta.
     """
     if not inicializar_gemini():
         return None
 
     try:
-        # 1. Carregar o modelo Gemini.
-        #    Usaremos o modelo especificado na variável de ambiente LLM_MODEL, ou 'gemini-pro' como padrão.
         llm_model_name = os.getenv("LLM_MODEL", "gemini-pro")
         model = genai.GenerativeModel(llm_model_name)
 
-        # 2. Preparar o conteúdo para o Gemini.
-        #    Substitui o placeholder no prompt pelo JSON dos dados de contexto,
-        #    garantindo que caracteres especiais sejam exibidos corretamente.
         conteudo_para_gemini = prompt.replace('{response.json}', json.dumps(dados_contexto, indent=2, ensure_ascii=False))
         
-        # 3. Gerar a resposta.
-        #    Envia o conteúdo preparado para o modelo Gemini.
         response = model.generate_content(conteudo_para_gemini)
 
-        # 4. Retornar o texto da resposta.
-        #    Verifica se a resposta contém texto antes de retornar.
         if response and response.text:
             return response.text
         else:
@@ -53,7 +44,7 @@ def interagir_com_gemini(prompt: str, dados_contexto: dict) -> str | None:
         print(f"ERRO ao interagir com o Gemini: {e}")
         return None
 
-# --- Fim das Funções de Interação com Gemini ---
+# Fim das Funções de Interação com Gemini
 
 def consultar_cnpj_api(cnpj: str) -> dict | None:
     """
@@ -77,10 +68,6 @@ def analisar_negocio_com_gemini(dados_empresa: dict) -> dict | None:
     com base no prompt do agente de negócio.
     Retorna um dicionário com a análise (pontos positivos, negativos, atenção) ou None em caso de erro.
     """
-    # 1. Carregar o prompt do agente de negócio.
-    #    - Use a mesma lógica de caminho absoluto que usamos para o cnae_educacao.json.
-    #    - O arquivo é 'config/agente_negocio_cnpj.txt'.
-    #    - Leia o conteúdo do arquivo para obter o prompt base.
     agente_negocio_path = os.path.join(os.path.dirname(__file__), '..', 'config', 'agente_negocio_cnpj.txt')
     try:
         with open(agente_negocio_path, 'r', encoding='utf-8') as f:
@@ -89,7 +76,6 @@ def analisar_negocio_com_gemini(dados_empresa: dict) -> dict | None:
         print(f"ERRO: Arquivo de prompt do agente de negócio não encontrado em {agente_negocio_path}")
         return None
 
-    # 2. Carregar os dados de CNAE de educação.
     cnae_educacao_path = os.path.join(os.path.dirname(__file__), '..', 'config', 'cnae_educacao.json')
     try:
         with open(cnae_educacao_path, 'r', encoding='utf-8') as f:
@@ -101,13 +87,12 @@ def analisar_negocio_com_gemini(dados_empresa: dict) -> dict | None:
         print(f"ERRO: Erro ao decodificar JSON do arquivo {cnae_educacao_path}")
         return None
 
-    # Adicionar os dados de CNAE de educação ao contexto para o Gemini
     dados_contexto_gemini = {
         "dados_empresa": dados_empresa,
         "cnae_educacao": cnae_educacao_data
     }
 
-    # --- Implementação da Regra de Desqualificação Automática (Ponto 1) ---
+    # Regra de Desqualificação Automática
     situacao_cadastral = dados_empresa.get("situacao_cadastral", "").upper()
     if situacao_cadastral in ["SUSPENSA", "BAIXADA"]:
         print(f"CNPJ com situação cadastral {situacao_cadastral} detectada. Desqualificação automática.")
@@ -118,22 +103,15 @@ def analisar_negocio_com_gemini(dados_empresa: dict) -> dict | None:
             "pontos_negativos": [f"Empresa com situação cadastral {situacao_cadastral}."],
             "recomendacao": "Reprovação automática devido à situação cadastral irregular."
         }
-    # --- Fim da Regra de Desqualificação Automática ---
+    # Fim da Regra de Desqualificação Automática
 
-    # 3. Chamar a função interagir_com_gemini.
-    #    - Passe o prompt carregado e os dados_contexto_gemini.
-    #    - Guarde a resposta do Gemini.
     gemini_response_text = interagir_com_gemini(agente_negocio_prompt, dados_contexto_gemini)
 
     if not gemini_response_text:
         print("ERRO: Gemini não retornou uma resposta para a análise de negócio.")
         return None
 
-    # 4. Processar a resposta do Gemini.
-    #    - A resposta do Gemini será um texto. Para o MVP, vamos tentar extrair JSON.
-    #    - Se o Gemini retornar um JSON, vamos parseá-lo. Caso contrário, retornaremos o texto bruto.
     try:
-        # Tenta encontrar um bloco JSON na resposta do Gemini
         json_start = gemini_response_text.find('{')
         json_end = gemini_response_text.rfind('}') + 1
         if json_start != -1 and json_end != -1 and json_end > json_start:
@@ -141,7 +119,6 @@ def analisar_negocio_com_gemini(dados_empresa: dict) -> dict | None:
             analise_estruturada = json.loads(json_str)
             return analise_estruturada
         else:
-            # Se não encontrar JSON, retorna o texto como um dicionário simples
             return {"analise_bruta": gemini_response_text}
     except json.JSONDecodeError:
         print(f"AVISO: Gemini não retornou um JSON válido. Resposta bruta: {gemini_response_text[:200]}...")
@@ -151,8 +128,6 @@ def analisar_scoring_com_gemini(dados_empresa: dict, analise_negocio: dict) -> d
     """
     Utiliza o Gemini para calcular o score e a classificação final da empresa.
     """
-    # 1. Carregar o prompt do agente de scoring.
-    #    - O arquivo é 'config/agente_scoring_cnpj.txt' (precisamos criar este arquivo).
     agente_scoring_path = os.path.join(os.path.dirname(__file__), '..', 'config', 'agente_scoring_cnpj.txt')
     try:
         with open(agente_scoring_path, 'r', encoding='utf-8') as f:
@@ -161,7 +136,6 @@ def analisar_scoring_com_gemini(dados_empresa: dict, analise_negocio: dict) -> d
         print(f"ERRO: Arquivo de prompt do agente de scoring não encontrado em {agente_scoring_path}")
         return None
 
-    # 2. Preparar os dados de contexto para o Gemini.
     dados_contexto_gemini = {
         "dados_empresa": dados_empresa,
         "analise_negocio": analise_negocio,
@@ -182,14 +156,12 @@ def analisar_scoring_com_gemini(dados_empresa: dict, analise_negocio: dict) -> d
         }
     }
 
-    # 3. Chamar a função interagir_com_gemini.
     gemini_response_text = interagir_com_gemini(agente_scoring_prompt, dados_contexto_gemini)
 
     if not gemini_response_text:
         print("ERRO: Gemini não retornou uma resposta para a análise de scoring.")
         return None
 
-    # 4. Processar a resposta do Gemini.
     try:
         json_start = gemini_response_text.find('{')
         json_end = gemini_response_text.rfind('}') + 1

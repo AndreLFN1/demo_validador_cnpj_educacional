@@ -1,5 +1,4 @@
 import json
-# Adicionamos a nova função ao import
 from validador_cnpj import valida_cnpj, formata_cnpj
 from analise_cnpj import consultar_cnpj_api, analisar_negocio_com_gemini, analisar_scoring_com_gemini
 
@@ -25,28 +24,22 @@ def main():
 
             if dados_empresa:
                 print("Dados da empresa encontrados.")
-                # Para manter o terminal limpo, não vamos mais imprimir o JSON inteiro.
-                # print(json.dumps(dados_empresa, indent=4, ensure_ascii=False))
 
-                # --- NOVA PARTE: ANÁLISE DE NEGÓCIO (CNAE) ---
+                # Análise de Negócio (CNAE)
                 print("Analisando CNAE...")
-                # 1. Chame a função analisar_negocio_com_gemini, passando os dados_empresa que recebemos da API.
                 resultado_negocio = analisar_negocio_com_gemini(dados_empresa)
 
-                # 2. Verifique o resultado da análise de negócio.
                 if resultado_negocio:
                     print("Análise de negócio concluída.")
-                    # print(json.dumps(resultado_negocio, indent=4, ensure_ascii=False))
 
-                    # --- NOVA PARTE: ANÁLISE DE SCORING ---
+                    # Análise de Scoring
                     print("Analisando Scoring...")
                     resultado_scoring = analisar_scoring_com_gemini(dados_empresa, resultado_negocio)
 
                     if resultado_scoring:
                         print("Análise de scoring concluída.")
-                        # print(json.dumps(resultado_scoring, indent=4, ensure_ascii=False))
 
-                        # --- SAÍDA FINAL --- 
+                        # Saída Final
                         print("\n=== ANÁLISE DE CNPJ ===")
                         print(f"CNPJ: {formata_cnpj(cnpj_valido)}")
                         print(f"Razão Social: {dados_empresa.get('razao_social', 'N/A')}")
@@ -63,7 +56,7 @@ def main():
 
                         print(f"\nRecomendação: {resultado_scoring.get('recomendacao', 'N/A')}")
 
-                        # Salvar JSON
+                        # Salvar resultado da análise em arquivo JSON
                         output_data = {
                             "cnpj": cnpj_valido,
                             "razao_social": dados_empresa.get('razao_social', 'N/A'),
@@ -81,7 +74,6 @@ def main():
 
                     else:
                         print("ERRO: Não foi possível obter o scoring da empresa.")
-                    # --- FIM DA NOVA PARTE ---
 
                 else:
                     print("ERRO: Não foi possível obter a análise de negócio da empresa.")
