@@ -51,5 +51,8 @@ Para executar o programa e analisar um CNPJ, siga os passos:
 
 
 
-https://github.com/user-attachments/assets/9a639d65-d691-437d-ba85-4118cfeebe42
+https://github.com/user-attachments/assets/aa117da4-c2b7-487e-a053-4588a882ff55
+
+
+
 
