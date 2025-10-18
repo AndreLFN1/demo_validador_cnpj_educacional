@@ -47,7 +47,7 @@ Para executar o programa e analisar um CNPJ, siga os passos:
 <img width="380" height="573" alt="image" src="https://github.com/user-attachments/assets/35507d9a-12c2-41cb-b957-eb3c05b912fb" />
 
 
-#Vídeo demonstrativo 
+# Vídeo demonstrativo 
 
 
 
