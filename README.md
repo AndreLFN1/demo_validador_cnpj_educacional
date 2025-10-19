@@ -45,3 +45,14 @@ Para executar o programa e analisar um CNPJ, siga os passos:
 3.  O programa processará o CNPJ através dos agentes e exibirá o resultado da análise no terminal, além de salvar um arquivo `resultado.json` na pasta `PythonScripts/`.
 
 <img width="380" height="573" alt="image" src="https://github.com/user-attachments/assets/35507d9a-12c2-41cb-b957-eb3c05b912fb" />
+
+
+# Vídeo demonstrativo 
+
+
+
+https://github.com/user-attachments/assets/aa117da4-c2b7-487e-a053-4588a882ff55
+
+
+
+
