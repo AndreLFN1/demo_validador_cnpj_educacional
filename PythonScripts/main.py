@@ -1,87 +1,101 @@
 import json
-from validador_cnpj import valida_cnpj, formata_cnpj
-from analise_cnpj import consultar_cnpj_api, analisar_negocio_com_gemini, analisar_scoring_com_gemini
+import os
+import sys
+from dotenv import load_dotenv
+from validador_cnpj import validate_cnpj, format_cnpj
+from analise_cnpj import fetch_cnpj_data, analyze_business_criteria, analyze_scoring
+
+def process_cnpj(cnpj_valido: str):
+    """Processes a single valid CNPJ."""
+    print(f"SUCCESS: The CNPJ {format_cnpj(cnpj_valido)} is valid.")
+    
+    print("Fetching data from API...")
+    company_data = fetch_cnpj_data(cnpj_valido)
+
+    if not company_data:
+        print("ERROR: Could not retrieve data from the API for this CNPJ.")
+        return
+
+    print("Company data found.")
+
+    # Business Analysis (CNAE)
+    print("Analyzing CNAE...")
+    business_result = analyze_business_criteria(company_data)
+
+    if not business_result:
+        print("ERROR: Could not get the business analysis for the company.")
+        return
+
+    print("Business analysis complete.")
+
+    # Scoring Analysis
+    print("Analyzing Scoring...")
+    scoring_result = analyze_scoring(company_data, business_result)
+
+    if not scoring_result:
+        print("ERROR: Could not get the company's scoring.")
+        return
+
+    print("Scoring analysis complete.")
+
+    # Final Output
+    print("\n=== CNPJ ANALYSIS ===")
+    print(f"CNPJ: {format_cnpj(cnpj_valido)}")
+    print(f"Company Name: {company_data.get('razao_social', 'N/A')}")
+    print(f"\n✅ RESULT: {scoring_result.get('classificacao', 'N/A')}")
+    print(f"📊 Score: {scoring_result.get('score', 'N/A')}/100")
+
+    print("\nPositive Points:")
+    for point in scoring_result.get('pontos_positivos', []):
+        print(f"  ✓ {point}")
+    
+    print("\nNegative Points:")
+    for point in scoring_result.get('pontos_negativos', []):
+        print(f"  ✗ {point}")
+
+    print(f"\nRecommendation: {scoring_result.get('recomendacao', 'N/A')}")
+
+    # Save analysis result to JSON file
+    output_data = {
+        "cnpj": cnpj_valido,
+        "razao_social": company_data.get('razao_social', 'N/A'),
+        "classification": scoring_result.get('classificacao', 'N/A'),
+        "score": scoring_result.get('score', 'N/A'),
+        "criteria": {
+            "positives": scoring_result.get('pontos_positivos', []),
+            "negatives": scoring_result.get('pontos_negativos', []),
+        },
+        "recommendation": scoring_result.get('recomendacao', 'N/A')
+    }
+    output_path = os.path.join(os.path.dirname(__file__), 'resultado.json')
+    with open(output_path, 'w', encoding='utf-8') as f:
+        json.dump(output_data, f, indent=2, ensure_ascii=False)
+    print("\nResult saved to resultado.json")
 
 def main():
-    """Função principal que executa o programa."""
-    print("--- Validador e Analisador de CNPJ ---")
-    print("Digite um CNPJ para validar ou 'sair' para terminar.")
+    """Main function that runs the program."""
+    load_dotenv()
+    if not os.getenv("GEMINI_API_KEY") or not os.getenv("CNPJA_API_KEY"):
+        print("ERRO: As chaves de API (GEMINI_API_KEY, CNPJA_API_KEY) não foram encontradas.")
+        print("Verifique se o arquivo .env existe e está configurado corretamente.")
+        sys.exit(1)
+        
+    print("--- CNPJ Validator and Analyzer ---")
+    print("Enter a CNPJ to validate or 'exit' to end.")
 
     while True:
-        cnpj_digitado = input("> ")
+        cnpj_input = input("> ")
 
-        if cnpj_digitado.lower() == 'sair':
-            print("Encerrando o programa.")
+        if cnpj_input.lower() == 'exit':
+            print("Exiting the program.")
             break
 
-        cnpj_valido = valida_cnpj(cnpj_digitado)
+        valid_cnpj = validate_cnpj(cnpj_input)
 
-        if cnpj_valido:
-            print(f"SUCESSO: O CNPJ {formata_cnpj(cnpj_valido)} é válido.")
-            
-            print("Buscando dados na API...")
-            dados_empresa = consultar_cnpj_api(cnpj_valido)
-
-            if dados_empresa:
-                print("Dados da empresa encontrados.")
-
-                # Análise de Negócio (CNAE)
-                print("Analisando CNAE...")
-                resultado_negocio = analisar_negocio_com_gemini(dados_empresa)
-
-                if resultado_negocio:
-                    print("Análise de negócio concluída.")
-
-                    # Análise de Scoring
-                    print("Analisando Scoring...")
-                    resultado_scoring = analisar_scoring_com_gemini(dados_empresa, resultado_negocio)
-
-                    if resultado_scoring:
-                        print("Análise de scoring concluída.")
-
-                        # Saída Final
-                        print("\n=== ANÁLISE DE CNPJ ===")
-                        print(f"CNPJ: {formata_cnpj(cnpj_valido)}")
-                        print(f"Razão Social: {dados_empresa.get('razao_social', 'N/A')}")
-                        print(f"\n✅ RESULTADO: {resultado_scoring.get('classificacao', 'N/A')}")
-                        print(f"📊 Score: {resultado_scoring.get('score', 'N/A')}/100")
-
-                        print("\nPontos Positivos:")
-                        for ponto in resultado_scoring.get('pontos_positivos', []):
-                            print(f"  ✓ {ponto}")
-                        
-                        print("\nPontos Negativos:")
-                        for ponto in resultado_scoring.get('pontos_negativos', []):
-                            print(f"  ✗ {ponto}")
-
-                        print(f"\nRecomendação: {resultado_scoring.get('recomendacao', 'N/A')}")
-
-                        # Salvar resultado da análise em arquivo JSON
-                        output_data = {
-                            "cnpj": cnpj_valido,
-                            "razao_social": dados_empresa.get('razao_social', 'N/A'),
-                            "classificacao": resultado_scoring.get('classificacao', 'N/A'),
-                            "score": resultado_scoring.get('score', 'N/A'),
-                            "criterios": {
-                                "positivos": resultado_scoring.get('pontos_positivos', []),
-                                "negativos": resultado_scoring.get('pontos_negativos', []),
-                            },
-                            "recomendacao": resultado_scoring.get('recomendacao', 'N/A')
-                        }
-                        with open('resultado.json', 'w', encoding='utf-8') as f:
-                            json.dump(output_data, f, indent=2, ensure_ascii=False)
-                        print("\nResultado salvo em resultado.json")
-
-                    else:
-                        print("ERRO: Não foi possível obter o scoring da empresa.")
-
-                else:
-                    print("ERRO: Não foi possível obter a análise de negócio da empresa.")
-
-            else:
-                print("ERRO: Não foi possível obter os dados da API para este CNPJ.")
+        if valid_cnpj:
+            process_cnpj(valid_cnpj)
         else:
-            print(f"ERRO: O CNPJ '{cnpj_digitado}' é inválido.")
+            print(f"ERROR: The CNPJ '{cnpj_input}' is invalid.")
         
         print("-" * 30)
 

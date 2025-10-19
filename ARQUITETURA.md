@@ -114,7 +114,7 @@ Python 3.11+
 ## 5. Estrutura do Projeto (MVP Implementado)
 
 ```
-demonio/
+PythonScripts/
 ├── main.py                    # CLI principal, orquestra os agentes
 ├── validador_cnpj.py          # Valida dígitos verificadores do CNPJ
 ├── analise_cnpj.py            # Contém a lógica dos 3 agentes (Cadastral, Negócio, Scoring)
@@ -133,19 +133,15 @@ demonio/
 
 ## 6. Fluxo de Execução (Implementado)
 
-1. Usuário executa: `python main.py`
-2. Sistema pede: "Digite o CNPJ:" (ou usa CNPJ fixo para testes)
-3. `validador_cnpj.py`: Valida o CNPJ (dígitos verificadores).
-4. `analise_cnpj.py` (Agente Cadastral): Consulta API CNPJA → pega dados JSON da empresa.
-5. `analise_cnpj.py` (Agente de Negócio):
-   - Carrega prompt de `agente_negocio_cnpj.txt` e dados de `cnae_educacao.json`.
-   - Envia dados da empresa e contexto para o Google Gemini (`LLM_MODEL` do `.env`).
-   - Gemini retorna análise de negócio (pontos positivos, negativos, atenção).
-6. `analise_cnpj.py` (Agente de Scoring):
-   - Carrega prompt de `agente_scoring_cnpj.txt`.
-   - Envia dados da empresa e análise de negócio para o Google Gemini (`LLM_MODEL` do `.env`).
-   - Gemini calcula score (0-100) e classifica (APROVADO/ATENÇÃO/REPROVADO).
-7. `main.py`: Mostra resultado formatado na tela e salva um JSON (`resultado.json`).
+1. Usuário executa: `python PythonScripts/main.py`
+2. O sistema verifica as chaves de API e inicializa.
+3. Pede para o usuário digitar o CNPJ.
+4. `main.py` chama `validate_cnpj()` de `validador_cnpj.py` para validar o CNPJ.
+5. Se válido, `main.py` chama `process_cnpj()` que orquestra a análise:
+   a. `fetch_cnpj_data()`: Consulta a API CNPJA para obter os dados da empresa.
+   b. `analyze_business_criteria()`: Envia os dados para o Gemini avaliar os critérios de negócio.
+   c. `analyze_scoring()`: Envia os dados e a análise de negócio para o Gemini calcular o score e a classificação.
+6. `process_cnpj()`: Mostra o resultado formatado na tela e salva o `resultado.json`.
 
 **Tempo total:** ~2 minutos
 
@@ -269,5 +265,5 @@ Esta arquitetura propõe um **MVP funcional e simples** que:
 ---
 
 **Autor:** Andre Luiz Ferreira do Nascimento
-**GitHub:** https://github.com/[seu-usuario]/demonio
+**GitHub:** https://github.com/User/cnpj_educacional_demo
 **Data:** Outubro 2025

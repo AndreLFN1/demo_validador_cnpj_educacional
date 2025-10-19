@@ -5,7 +5,7 @@
     brasileiros usando seus dígitos verificadores.
     """
 
-def valida_cnpj(cnpj: str) -> str | None:
+def validate_cnpj(cnpj: str) -> str | None:
     """
     Valida um número de CNPJ.
 
@@ -43,10 +43,10 @@ def valida_cnpj(cnpj: str) -> str | None:
 
     if digitos_informados == digitos_calculados:
         return cnpj_limpo
-    else:
-        return None
+    
+    return None
 
-def formata_cnpj(cnpj: str) -> str:
+def format_cnpj(cnpj: str) -> str:
     """
     Formata uma string de CNPJ limpa para o padrão 00.000.000/0000-00.
 

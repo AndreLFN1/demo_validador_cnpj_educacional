@@ -10,8 +10,8 @@ Certifique-se de ter o Python 3.11+ e o pip instalados em seu sistema.
 
 1.  Clone este repositório:
     ```bash
-    git clone https://github.com/[seu-usuario]/demonio.git
-    cd demonio
+    git clone https://github.com/User/cnpj_educacional_demo.git
+    cd cnpj_educacional_demo
     ```
 2.  Instale as dependências:
     ```bash

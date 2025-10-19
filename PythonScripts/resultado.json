@@ -1,18 +1,18 @@
 {
-  "cnpj": "34075739000184",
+  "cnpj": "18301267000184",
   "razao_social": "N/A",
   "classificacao": "APROVADO",
-  "score": 75,
+  "score": 85,
   "criterios": {
     "positivos": [
-      "Situação cadastral ATIVA.",
-      "CNAE principal no setor de Educação (85.xx).",
-      "Capital Social elevado (R$ 3.600.408.131,00), enquadrado na faixa superior, contribuindo com",
-      "Tempo de atividade superior a 55 anos, demonstrando solidez."
+      "Status cadastral 'Ativa', indicando operação regular e continuidade de negócio.",
+      "Atividade principal (CNAE 8531-7 - Educação superior - graduação) é altamente compatível e prioritária para o setor de ensino.",
+      "Empresa com longa data de fundação (desde 1975), demonstrando solidez e experiência no mercado.",
+      "Nenhuma restrição grave identificada nos dados fornecidos."
     ],
     "negativos": [
-      "Ausência de informações explícitas sobre restrições cadastrais no JSON fornecido, requerendo verificação adicional."
+      "Capital social não informado ('equity': null), impedindo uma avaliação completa da adequação financeira para o porte da operação."
     ]
   },
-  "recomendacao": "A empresa apresenta um perfil robusto e foi aprovada. Recomenda-se prosseguir com o relacionamento, mas com diligência adicional nos pontos de atenção mencionados na análise de negócio (mudanças administrativas e verificação de restrições)."
+  "recomendacao": "A empresa OBRAS SOCIAIS E EDUCACIONAIS DE LUZ é APROVADA com um score robusto, indicando um perfil de negócio muito sólido e altamente compatível com o setor. Recomenda-se prosseguir com as próximas etapas da análise, com prioridade na obtenção e validação do capital social para assegurar a saúde financeira da empresa e completar a avaliação."
 }
