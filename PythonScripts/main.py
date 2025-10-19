@@ -6,56 +6,56 @@ from validador_cnpj import validate_cnpj, format_cnpj
 from analise_cnpj import fetch_cnpj_data, analyze_business_criteria, analyze_scoring
 
 def process_cnpj(cnpj_valido: str):
-    """Processes a single valid CNPJ."""
-    print(f"SUCCESS: The CNPJ {format_cnpj(cnpj_valido)} is valid.")
+    """Processa um único CNPJ válido."""
+    print(f"SUCESSO: O CNPJ {format_cnpj(cnpj_valido)} é válido.")
     
-    print("Fetching data from API...")
+    print("Buscando dados na API...")
     company_data = fetch_cnpj_data(cnpj_valido)
 
     if not company_data:
-        print("ERROR: Could not retrieve data from the API for this CNPJ.")
+        print("ERRO: Não foi possível obter os dados da API para este CNPJ.")
         return
 
-    print("Company data found.")
+    print("Dados da empresa encontrados.")
 
-    # Business Analysis (CNAE)
-    print("Analyzing CNAE...")
+    # Análise de Negócio (CNAE)
+    print("Analisando CNAE...")
     business_result = analyze_business_criteria(company_data)
 
     if not business_result:
-        print("ERROR: Could not get the business analysis for the company.")
+        print("ERRO: Não foi possível obter a análise de negócio da empresa.")
         return
 
-    print("Business analysis complete.")
+    print("Análise de negócio concluída.")
 
-    # Scoring Analysis
-    print("Analyzing Scoring...")
+    # Análise de Scoring
+    print("Analisando Scoring...")
     scoring_result = analyze_scoring(company_data, business_result)
 
     if not scoring_result:
-        print("ERROR: Could not get the company's scoring.")
+        print("ERRO: Não foi possível obter o scoring da empresa.")
         return
 
-    print("Scoring analysis complete.")
+    print("Análise de scoring concluída.")
 
-    # Final Output
-    print("\n=== CNPJ ANALYSIS ===")
+    # Saída Final
+    print("\n=== ANÁLISE DE CNPJ ===")
     print(f"CNPJ: {format_cnpj(cnpj_valido)}")
-    print(f"Company Name: {company_data.get('razao_social', 'N/A')}")
-    print(f"\n✅ RESULT: {scoring_result.get('classificacao', 'N/A')}")
+    print(f"Razão Social: {company_data.get('razao_social', 'N/A')}")
+    print(f"\n✅ RESULTADO: {scoring_result.get('classificacao', 'N/A')}")
     print(f"📊 Score: {scoring_result.get('score', 'N/A')}/100")
 
-    print("\nPositive Points:")
+    print("\nPontos Positivos:")
     for point in scoring_result.get('pontos_positivos', []):
         print(f"  ✓ {point}")
     
-    print("\nNegative Points:")
+    print("\nPontos Negativos:")
     for point in scoring_result.get('pontos_negativos', []):
         print(f"  ✗ {point}")
 
-    print(f"\nRecommendation: {scoring_result.get('recomendacao', 'N/A')}")
+    print(f"\nRecomendação: {scoring_result.get('recomendacao', 'N/A')}")
 
-    # Save analysis result to JSON file
+    # Salvar resultado da análise em arquivo JSON
     output_data = {
         "cnpj": cnpj_valido,
         "razao_social": company_data.get('razao_social', 'N/A'),
@@ -70,24 +70,24 @@ def process_cnpj(cnpj_valido: str):
     output_path = os.path.join(os.path.dirname(__file__), 'resultado.json')
     with open(output_path, 'w', encoding='utf-8') as f:
         json.dump(output_data, f, indent=2, ensure_ascii=False)
-    print("\nResult saved to resultado.json")
+    print("\nResultado salvo em resultado.json")
 
 def main():
-    """Main function that runs the program."""
+    """Função principal que executa o programa."""
     load_dotenv()
     if not os.getenv("GEMINI_API_KEY") or not os.getenv("CNPJA_API_KEY"):
         print("ERRO: As chaves de API (GEMINI_API_KEY, CNPJA_API_KEY) não foram encontradas.")
         print("Verifique se o arquivo .env existe e está configurado corretamente.")
         sys.exit(1)
         
-    print("--- CNPJ Validator and Analyzer ---")
-    print("Enter a CNPJ to validate or 'exit' to end.")
+    print("--- Validador e Analisador de CNPJ ---")
+    print("Digite um CNPJ para validar ou 'sair' para terminar.")
 
     while True:
         cnpj_input = input("> ")
 
-        if cnpj_input.lower() == 'exit':
-            print("Exiting the program.")
+        if cnpj_input.lower() == 'sair':
+            print("Encerrando o programa.")
             break
 
         valid_cnpj = validate_cnpj(cnpj_input)
@@ -95,7 +95,7 @@ def main():
         if valid_cnpj:
             process_cnpj(valid_cnpj)
         else:
-            print(f"ERROR: The CNPJ '{cnpj_input}' is invalid.")
+            print(f"ERRO: O CNPJ '{cnpj_input}' é inválido.")
         
         print("-" * 30)
 

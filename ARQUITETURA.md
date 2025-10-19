@@ -217,15 +217,14 @@ Cada agente (Negócio e Scoring) fará chamadas ao Gemini 2.5 Pro, passando os d
 
 ## 10. Custos Estimados
 
-### Cenário com Google Gemini 2.5 Pro (100 análises/mês)
-```
-Google Gemini 2.5 Pro: (Custos variam, verificar tabela de preços do Google AI Studio/Cloud)
-API CNPJA: Grátis (até 3 req/min)
-──────────────────────────
-TOTAL: (Depende do uso do Gemini)
-```
+### Cenário com Google Gemini 2.5 Pro (50-250 análises/mês)
+O custo principal do sistema está atrelado ao uso da API do Google Gemini, que é pago por volume de tokens (texto processado).
 
-**ROI:** Cada análise manual custa R$25. Automatizada custa R$0,01. **Economia de 99,96%!**
+- **Custo Variável (Google Gemini):** O custo mensal dependerá do número de análises. A faixa de 50 a 250 análises/mês serve como base para estimar o consumo. É necessário consultar a tabela de preços oficial do Google AI para o modelo em uso para ter uma estimativa precisa.
+- **Custo Fixo (API CNPJA):** A API CNPJA utilizada possui um plano gratuito com um limite de até 3 requisições por minuto, o que é suficiente para este cenário.
+
+**Retorno sobre o Investimento (ROI):**
+A economia gerada é substancial. Considerando que uma análise manual leva ~30 minutos e tem um custo operacional associado, a automação reduz o tempo para segundos e o custo por análise a centavos (relacionado apenas ao uso da API da IA). A economia percentual, mesmo no cenário de maior uso, permanece acima de 99% em comparação ao processo manual.
 
 ---
 
@@ -249,18 +248,6 @@ TOTAL: (Depende do uso do Gemini)
 
 ### Ferramenta de Desenvolvimento (BMAD)
 Este projeto foi desenvolvido com o auxílio da ferramenta BMAD (Base Model Agent Development), que facilitou a prototipagem e implementação da arquitetura multi-agente.
-
----
-
-## Conclusão
-
-Esta arquitetura propõe um **MVP funcional e simples** que:
-- ✅ Atende todos os requisitos do teste
-- ✅ É fácil de entender e explicar
-- ✅ Pode evoluir para versões mais sofisticadas
-- ✅ Demonstra conhecimento de arquitetura de sistemas
-
-**Próximo passo:** Implementar o código seguindo esta arquitetura!
 
 ---
 
