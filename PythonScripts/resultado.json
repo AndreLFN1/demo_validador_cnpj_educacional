@@ -1,18 +1,19 @@
 {
-  "cnpj": "18301267000184",
-  "razao_social": "N/A",
-  "classificacao": "APROVADO",
-  "score": 85,
-  "criterios": {
-    "positivos": [
-      "Status cadastral 'Ativa', indicando operação regular e continuidade de negócio.",
-      "Atividade principal (CNAE 8531-7 - Educação superior - graduação) é altamente compatível e prioritária para o setor de ensino.",
-      "Empresa com longa data de fundação (desde 1975), demonstrando solidez e experiência no mercado.",
-      "Nenhuma restrição grave identificada nos dados fornecidos."
+  "cnpj": "79265617000199",
+  "razao_social": "CESUMAR - CENTRO DE ENSINO SUPERIOR DE MARINGA LTDA",
+  "classification": "APROVADO",
+  "score": 75,
+  "criteria": {
+    "positives": [
+      "Empresa com situação ATIVA, demonstrando operacionalidade e continuidade.",
+      "Atividade principal (CNAE 8532500) é do setor de Educação, o que é altamente prioritário e central.",
+      "Capital social de R$ 103.196.725,00, classificado na faixa mais alta, indicando robustez financeira.",
+      "Empresa com mais de 39 anos de atividade, demonstrando solidez e vasta experiência no mercado."
     ],
-    "negativos": [
-      "Capital social não informado ('equity': null), impedindo uma avaliação completa da adequação financeira para o porte da operação."
+    "negatives": [
+      "Múltiplas mudanças recentes na estrutura societária e administrativa, sugerindo um período de transição ou reestruturação.",
+      "Presença de diversas atividades secundárias não alinhadas ao core educacional, o que requer análise aprofundada."
     ]
   },
-  "recomendacao": "A empresa OBRAS SOCIAIS E EDUCACIONAIS DE LUZ é APROVADA com um score robusto, indicando um perfil de negócio muito sólido e altamente compatível com o setor. Recomenda-se prosseguir com as próximas etapas da análise, com prioridade na obtenção e validação do capital social para assegurar a saúde financeira da empresa e completar a avaliação."
+  "recommendation": "A forte solidez da empresa e o alinhamento de seu core business a tornam uma candidata aprovada. Recomenda-se, no entanto, monitorar os pontos de atenção identificados, como as mudanças societárias e a diversificação de atividades secundárias, para garantir a estabilidade e a coerência estratégica das operações."
 }

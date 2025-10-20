@@ -171,3 +171,4 @@ def analyze_scoring(company_data: dict, business_analysis: dict) -> dict | None:
     except json.JSONDecodeError:
         print(f"AVISO: Gemini não retornou um JSON válido para scoring. Resposta bruta: {gemini_response_text[:200]}...")
         return {"analise_bruta": gemini_response_text}
+

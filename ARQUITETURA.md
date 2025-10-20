@@ -203,17 +203,28 @@ Cada agente (Negócio e Scoring) fará chamadas ao Gemini 2.5 Pro, passando os d
 
 ---
 
-## 9. Roadmap Futuro (v2.0)
+## 9. Roadmap Futuro e Brainstorm de Ideias (v2.0+)
 
-**O que pode evoluir depois:**
-- 🤖 Adicionar mais agentes (ex: Agente de Insights)
-- 🌐 Criar API REST (FastAPI)
-- 📊 Dashboard web (Streamlit)
-- 🔄 Processar vários CNPJs em lote
-- 🧠 Integrar LLMs para análises qualitativas
-- 📈 Banco de dados para histórico
+A seguir, uma análise das ideias propostas para a evolução do projeto, focando em factibilidade, impacto e um plano de implementação faseado.
+
+### Análise e Brainstorm de Ideias
+
+| Ideia | Factibilidade | Impacto Potencial | Sugestões e Melhorias |
+| :--- | :--- | :--- | :--- |
+| **1. Gerar imagem de fluxograma** | **Alta** | **Médio** | Podemos usar uma API como a DeepAI. O impacto é mais para marketing e apresentações do que para a operação diária. Seria um "entregável" visualmente atraente. |
+| **2. Armazenar histórico do capital social** | **Alta** | **Alto** | Essencial para provar o valor da parceria. Podemos começar com um CSV simples, registrando `CNPJ, Data, CapitalSocial`. É um passo fundamental para a ideia 9. |
+| **3. Salvar cada consulta em CSV** | **Alta** | **Alto** | **Ponto de partida ideal.** É simples de implementar e serve como base para as ideias 2, 4, 5 e 9. Garante que nenhum dado seja perdido e permite análises futuras. |
+| **4. Avaliação de CNPJ's em lote via CSV** | **Alta** | **Muito Alto** | Aumenta drasticamente a eficiência do processo. Se um usuário precisa analisar 50 CNPJs, o valor percebido da ferramenta cresce exponencialmente. Depende da ideia 3. |
+| **5. Comparação entre CNPJ's** | **Média** | **Muito Alto** | Ajuda na tomada de decisão estratégica. A complexidade está em definir *quais* métricas comparar (score, capital, localização, etc.). Podemos criar uma tabela comparativa como output. |
+| **6. Criar uma GUI (Interface Gráfica)** | **Baixa** | **Alto** | É um projeto grande que envolve escolher uma tecnologia (PySimpleGUI, Flask, etc.) e redesenhar a interação. Melhora muito a usabilidade, mas exige um esforço de desenvolvimento considerável. |
+| **7. Sistema de senha para edição** | **Média** | **Baixo** | Aumenta a segurança, mas talvez seja complexo demais para o benefício atual. Uma alternativa mais simples seria instruir sobre permissões de arquivo ou implementar isso futuramente dentro da GUI (ideia 6). |
+| **8. Input manual de considerações** | **Alta** | **Médio** | Simples de adicionar, enriquece a análise com dados qualitativos que a API não captura. O agente de análise pode usar essa informação para gerar um resultado mais completo. |
+| **9. Integração com Metabase/Databricks** | **Média** | **Muito Alto** | Transforma o projeto de uma ferramenta para um motor de Business Intelligence. A complexidade está na configuração da conexão com o banco de dados. É o passo mais avançado para escalar o valor dos dados. |
+| **10. Gerar perguntas com base na análise** | **Alta** | **Alto** | Agrega muito valor com pouco esforço. Transforma a análise de um simples relatório para um guia de ação, preparando o time de negócios para a próxima conversa com o cliente. |
 
 ---
+
+
 
 ## 10. Custos Estimados
 

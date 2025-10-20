@@ -1,6 +1,5 @@
-Leia o documento {response.json} e interprete as informações de acordo com o que se segue. Seu papel é fornecer uma análise qualitativa e interpretativa do perfil de negócio da empresa, identificando pontos fortes, fracos e de atenção que podem não ser capturados apenas por uma pontuação numérica.
-
-O JSON contém informações sobre CNPJ's de uma dada empresa. É importante verificar com cautela todas as informações no documento.
+Leia o documento {response.json} e interprete as informações de acordo com o que se segue. Seu papel é fornecer uma análise qualitativa e interpretativa do perfil de negócio da 
+empresa, identificando pontos fortes, fracos e de atenção que podem não ser capturados apenas por uma pontuação numérica.
 
 **Critérios para Análise Qualitativa:**
 

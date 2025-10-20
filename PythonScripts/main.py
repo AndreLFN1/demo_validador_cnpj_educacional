@@ -41,7 +41,7 @@ def process_cnpj(cnpj_valido: str):
     # Saída Final
     print("\n=== ANÁLISE DE CNPJ ===")
     print(f"CNPJ: {format_cnpj(cnpj_valido)}")
-    print(f"Razão Social: {company_data.get('razao_social', 'N/A')}")
+    print(f"Razão Social: {company_data.get('company', {}).get('name', 'N/A')}")
     print(f"\n✅ RESULTADO: {scoring_result.get('classificacao', 'N/A')}")
     print(f"📊 Score: {scoring_result.get('score', 'N/A')}/100")
 
@@ -58,7 +58,7 @@ def process_cnpj(cnpj_valido: str):
     # Salvar resultado da análise em arquivo JSON
     output_data = {
         "cnpj": cnpj_valido,
-        "razao_social": company_data.get('razao_social', 'N/A'),
+        "razao_social": company_data.get('company', {}).get('name', 'N/A'),
         "classification": scoring_result.get('classificacao', 'N/A'),
         "score": scoring_result.get('score', 'N/A'),
         "criteria": {

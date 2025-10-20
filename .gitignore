@@ -4,3 +4,6 @@
 Arquivo
 webbundles
 .env
+
+# Python cache
+__pycache__/
