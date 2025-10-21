@@ -71,16 +71,25 @@ Cada agente tem **uma responsabilidade clara**:
 
 ## 3. Critérios de Análise
 
-### Matriz de Decisão (Score de 0-100)
+### Critérios de Análise (Score de 0-100)
 
-| Critério | Peso | ✅ Positivo | ❌ Negativo |
-|----------|------|------------|-------------|
-| **Situação** | 20 | ATIVA | SUSPENSA/BAIXADA |
-| **CNAE** | 25 | Educação (85.xx) | Outro setor |
-| **Capital Social** | 15 | ≥ R$ 100K | < R$ 50K |
-| **Tempo Atividade** | 15 | ≥ 2 anos | < 2 anos |
-| **Restrições** | 25 | Nenhuma | 2+ restrições |
-| **TOTAL** | **100** | | |
+A pontuação é calculada pelo **Agente de Scoring (LLM)**, que recebe um conjunto de diretrizes para sua análise. Em vez de um cálculo fixo, o agente de IA avalia os dados da empresa em relação aos seguintes critérios e pesos para determinar um score de forma dinâmica:
+
+- **Situação Cadastral (Peso 20):** `ATIVA` é positivo.
+- **CNAE (Peso 25):** Pertencer ao setor de educação (código 85.xx) é positivo.
+- **Capital Social (Peso 15):** Valores acima de R$ 100.000 são mais positivos.
+- **Tempo de Atividade (Peso 15):** Empresas com mais de 2 anos são vistas como mais estáveis.
+- **Restrições (Peso 25):** A ausência de restrições é positiva.
+
+Essa abordagem permite que o LLM faça uma avaliação mais completa, considerando nuances nos dados que um sistema de regras fixas poderia ignorar.
+
+### Regras de Desqualificação Automática
+
+Antes da análise de scoring, o sistema aplica regras de negócio críticas que podem levar à reprovação imediata:
+
+1.  **Situação Cadastral:** CNPJs com situação `SUSPENSA` ou `BAIXADA` são automaticamente reprovados.
+2.  **CNAE não-educacional:** Se o CNAE principal da empresa não pertencer à lista de CNAEs de educação, a análise é interrompida e o CNPJ é reprovado.
+
 
 ### Classificação Final
 
@@ -139,7 +148,10 @@ PythonScripts/
 4. `main.py` chama `validate_cnpj()` de `validador_cnpj.py` para validar o CNPJ.
 5. Se válido, `main.py` chama `process_cnpj()` que orquestra a análise:
    a. `fetch_cnpj_data()`: Consulta a API CNPJA para obter os dados da empresa.
-   b. `analyze_business_criteria()`: Envia os dados para o Gemini avaliar os critérios de negócio.
+   b. `analyze_business_criteria()`: Antes de chamar o LLM, o sistema aplica **regras de desqualificação automática**:
+      - Verifica a **situação cadastral**. Se estiver `SUSPENSA` ou `BAIXADA`, a análise para.
+      - Verifica o **CNAE principal**. Se não for da área de educação, a análise para.
+      - Se aprovado nas regras, os dados são enviados ao Gemini para uma análise de negócio aprofundada.
    c. `analyze_scoring()`: Envia os dados e a análise de negócio para o Gemini calcular o score e a classificação.
 6. `process_cnpj()`: Mostra o resultado formatado na tela e salva o `resultado.json`.
 
@@ -172,15 +184,18 @@ Recomendação: Aprovar parceria com verificação padrão de documentos.
 {
   "cnpj": "12345678000190",
   "razao_social": "Instituto XYZ",
-  "classificacao": "APROVADO",
+  "classification": "APROVADO",
   "score": 85,
-  "criterios": {
-    "situacao_ativa": 20,
-    "cnae_educacao": 25,
-    "capital_adequado": 15,
-    "tempo_atividade": 15,
-    "sem_restricoes": 25
-  }
+  "criteria": {
+    "positives": [
+      "Empresa ativa há 5 anos",
+      "Capital social R$ 250.000",
+      "CNAE: 8531-7 (Educação superior)",
+      "Sem restrições cadastrais"
+    ],
+    "negatives": []
+  },
+  "recommendation": "Aprovar parceria com verificação padrão de documentos."
 }
 ```
 
@@ -211,16 +226,20 @@ A seguir, uma análise das ideias propostas para a evolução do projeto, focand
 
 | Ideia | Factibilidade | Impacto Potencial | Sugestões e Melhorias |
 | :--- | :--- | :--- | :--- |
-| **1. Gerar imagem de fluxograma** | **Alta** | **Médio** | Podemos usar uma API como a DeepAI. O impacto é mais para marketing e apresentações do que para a operação diária. Seria um "entregável" visualmente atraente. |
-| **2. Armazenar histórico do capital social** | **Alta** | **Alto** | Essencial para provar o valor da parceria. Podemos começar com um CSV simples, registrando `CNPJ, Data, CapitalSocial`. É um passo fundamental para a ideia 9. |
-| **3. Salvar cada consulta em CSV** | **Alta** | **Alto** | **Ponto de partida ideal.** É simples de implementar e serve como base para as ideias 2, 4, 5 e 9. Garante que nenhum dado seja perdido e permite análises futuras. |
-| **4. Avaliação de CNPJ's em lote via CSV** | **Alta** | **Muito Alto** | Aumenta drasticamente a eficiência do processo. Se um usuário precisa analisar 50 CNPJs, o valor percebido da ferramenta cresce exponencialmente. Depende da ideia 3. |
-| **5. Comparação entre CNPJ's** | **Média** | **Muito Alto** | Ajuda na tomada de decisão estratégica. A complexidade está em definir *quais* métricas comparar (score, capital, localização, etc.). Podemos criar uma tabela comparativa como output. |
-| **6. Criar uma GUI (Interface Gráfica)** | **Baixa** | **Alto** | É um projeto grande que envolve escolher uma tecnologia (PySimpleGUI, Flask, etc.) e redesenhar a interação. Melhora muito a usabilidade, mas exige um esforço de desenvolvimento considerável. |
-| **7. Sistema de senha para edição** | **Média** | **Baixo** | Aumenta a segurança, mas talvez seja complexo demais para o benefício atual. Uma alternativa mais simples seria instruir sobre permissões de arquivo ou implementar isso futuramente dentro da GUI (ideia 6). |
-| **8. Input manual de considerações** | **Alta** | **Médio** | Simples de adicionar, enriquece a análise com dados qualitativos que a API não captura. O agente de análise pode usar essa informação para gerar um resultado mais completo. |
-| **9. Integração com Metabase/Databricks** | **Média** | **Muito Alto** | Transforma o projeto de uma ferramenta para um motor de Business Intelligence. A complexidade está na configuração da conexão com o banco de dados. É o passo mais avançado para escalar o valor dos dados. |
-| **10. Gerar perguntas com base na análise** | **Alta** | **Alto** | Agrega muito valor com pouco esforço. Transforma a análise de um simples relatório para um guia de ação, preparando o time de negócios para a próxima conversa com o cliente. |
+| **1. Gerar imagem de fluxograma** | **Alta** | **Médio** | Usar uma API como a DeepAI para criar um entregável visualmente atraente para apresentações. |
+| **2. Armazenar histórico do capital social** | **Alta** | **Alto** | Essencial para provar o valor da parceria. Começar com um CSV simples (`CNPJ, Data, CapitalSocial`). |
+| **3. Salvar cada consulta em CSV** | **Alta** | **Alto** | **Ponto de partida ideal.** Base para as ideias 2, 4, 5 e 9. Garante que nenhum dado seja perdido. |
+| **4. Avaliação de CNPJ's em lote via CSV** | **Alta** | **Muito Alto** | Aumenta drasticamente a eficiência. O valor percebido da ferramenta cresce exponencialmente. |
+| **5. Comparação entre CNPJ's** | **Média** | **Muito Alto** | Ajuda na decisão estratégica. Criar uma tabela comparativa como output (score, capital, etc.). |
+| **6. Criar uma GUI (Interface Gráfica)** | **Baixa** | **Alto** | Projeto grande (PySimpleGUI, Flask). Melhora a usabilidade, mas exige esforço considerável. |
+| **7. Sistema de senha para edição** | **Média** | **Baixo** | Complexo para o benefício atual. Alternativa: permissões de arquivo ou implementar na GUI (ideia 6). |
+| **8. Input manual de considerações** | **Alta** | **Médio** | Simples de adicionar. Enriquece a análise com dados qualitativos que a API não captura. |
+| **9. Integração com Metabase/Databricks** | **Média** | **Muito Alto** | Transforma a ferramenta em um motor de BI. Passo avançado para escalar o valor dos dados. |
+| **10. Gerar perguntas com base na análise** | **Alta** | **Alto** | Transforma o relatório em um guia de ação, preparando o time de negócios para a próxima conversa. |
+| **11. Consulta ao Reclame Aqui** | **Média** | **Alto** | **(Novo)** Criar um "Agente de Reputação" que faz web scraping da página da empresa no Reclame Aqui e usa o LLM para buscar sinais de fraude ou problemas operacionais graves. |
+| **12. Verificação de Cadastro no MEC** | **Média** | **Muito Alto** | **(Novo)** Funcionalidade crítica de anti-fraude. Exigiria web scraping do portal e-MEC. O resultado deve ser uma regra de negócio: se for uma IES e não estiver no e-MEC, é reprovada. |
+| **13. Análise de Ações Trabalhistas** | **Baixa-Média** | **Alto** | **(Novo)** Acesso a bancos de dados de tribunais é complexo. Uma abordagem inicial (v2.0) seria um "Agente Legal" que busca no Google por `"nome da empresa" + "ação trabalhista"` e analisa os resultados. |
+| **14. Análise de Ações Judiciais dos Sócios** | **Baixa** | **Muito Alto** | **(Novo)** O mais complexo. Exige identificar os sócios, buscar processos por nome/CPF e desambiguar resultados. Seria uma evolução (v3.0) do "Agente Legal", focada em due diligence aprofundada. |
 
 ---
 

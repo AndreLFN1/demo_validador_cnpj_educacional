@@ -26,17 +26,21 @@ def process_cnpj(cnpj_valido: str):
         print("ERRO: Não foi possível obter a análise de negócio da empresa.")
         return
 
-    print("Análise de negócio concluída.")
+    # Verifica se houve desqualificação automática na análise de negócio
+    if business_result.get("classificacao") == "REPROVADO":
+        print("Análise concluída com desqualificação automática.")
+        scoring_result = business_result  # Pula a etapa de scoring
+    else:
+        print("Análise de negócio concluída.")
+        # Análise de Scoring
+        print("Analisando Scoring...")
+        scoring_result = analyze_scoring(company_data, business_result)
 
-    # Análise de Scoring
-    print("Analisando Scoring...")
-    scoring_result = analyze_scoring(company_data, business_result)
-
-    if not scoring_result:
-        print("ERRO: Não foi possível obter o scoring da empresa.")
-        return
-
-    print("Análise de scoring concluída.")
+        if not scoring_result:
+            print("ERRO: Não foi possível obter o scoring da empresa.")
+            return
+        
+        print("Análise de scoring concluída.")
 
     # Saída Final
     print("\n=== ANÁLISE DE CNPJ ===")

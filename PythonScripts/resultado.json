@@ -1,19 +1,13 @@
 {
-  "cnpj": "79265617000199",
-  "razao_social": "CESUMAR - CENTRO DE ENSINO SUPERIOR DE MARINGA LTDA",
-  "classification": "APROVADO",
-  "score": 75,
+  "cnpj": "33592510000154",
+  "razao_social": "VALE S.A.",
+  "classification": "REPROVADO",
+  "score": 0,
   "criteria": {
-    "positives": [
-      "Empresa com situação ATIVA, demonstrando operacionalidade e continuidade.",
-      "Atividade principal (CNAE 8532500) é do setor de Educação, o que é altamente prioritário e central.",
-      "Capital social de R$ 103.196.725,00, classificado na faixa mais alta, indicando robustez financeira.",
-      "Empresa com mais de 39 anos de atividade, demonstrando solidez e vasta experiência no mercado."
-    ],
+    "positives": [],
     "negatives": [
-      "Múltiplas mudanças recentes na estrutura societária e administrativa, sugerindo um período de transição ou reestruturação.",
-      "Presença de diversas atividades secundárias não alinhadas ao core educacional, o que requer análise aprofundada."
+      "CNAE principal (Extração de minério de ferro) não pertence ao setor educacional."
     ]
   },
-  "recommendation": "A forte solidez da empresa e o alinhamento de seu core business a tornam uma candidata aprovada. Recomenda-se, no entanto, monitorar os pontos de atenção identificados, como as mudanças societárias e a diversificação de atividades secundárias, para garantir a estabilidade e a coerência estratégica das operações."
+  "recommendation": "Reprovação automática por não ser uma instituição de ensino."
 }

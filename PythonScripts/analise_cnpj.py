@@ -90,7 +90,7 @@ def analyze_business_criteria(company_data: dict) -> dict | None:
     }
 
     # Regra de Desqualificação Automática
-    registration_status = company_data.get("situacao_cadastral", "").upper()
+    registration_status = company_data.get("status", {}).get("text", "").upper()
     if registration_status in ["SUSPENSA", "BAIXADA"]:
         print(f"CNPJ com situação cadastral {registration_status} detectada. Desqualificação automática.")
         return {
@@ -100,7 +100,29 @@ def analyze_business_criteria(company_data: dict) -> dict | None:
             "pontos_negativos": [f"Empresa com situação cadastral {registration_status}."],
             "recomendacao": "Reprovação automática devido à situação cadastral irregular."
         }
-    # Fim da Regra de Desqualificação Automática
+
+    # Nova Regra de Desqualificação por CNAE (Corrigida)
+    primary_cnae_id = company_data.get('mainActivity', {}).get('id')
+    primary_cnae_text = company_data.get('mainActivity', {}).get('text', 'N/A')
+
+    if primary_cnae_id:
+        valid_cnae_ids = []
+        for cnae_item in cnae_education_data.get('cnaes_principais', []):
+            cnae_str = cnae_item.get('codigo_formatado', '')
+            normalized_cnae = "".join(filter(str.isdigit, cnae_str))
+            if normalized_cnae:
+                valid_cnae_ids.append(int(normalized_cnae))
+        
+        if primary_cnae_id not in valid_cnae_ids:
+            print(f"CNAE principal '{primary_cnae_text}' ({primary_cnae_id}) não pertence ao setor educacional. Desqualificação automática.")
+            return {
+                "classificacao": "REPROVADO",
+                "score": 0,
+                "pontos_positivos": [],
+                "pontos_negativos": [f"CNAE principal ({primary_cnae_text}) não pertence ao setor educacional."],
+                "recomendacao": "Reprovação automática por não ser uma instituição de ensino."
+            }
+    # Fim da Regra de Desqualificação por CNAE
 
     gemini_response_text = interact_with_gemini(business_agent_prompt, gemini_context_data)
 
