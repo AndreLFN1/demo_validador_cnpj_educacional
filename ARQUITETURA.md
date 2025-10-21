@@ -88,7 +88,7 @@ Essa abordagem permite que o LLM faça uma avaliação mais completa, consideran
 Antes da análise de scoring, o sistema aplica regras de negócio críticas que podem levar à reprovação imediata:
 
 1.  **Situação Cadastral:** CNPJs com situação `SUSPENSA` ou `BAIXADA` são automaticamente reprovados.
-2.  **CNAE não-educacional:** Se o CNAE principal da empresa não pertencer à lista de CNAEs de educação, a análise é interrompida e o CNPJ é reprovado. O sistema informa ao usuário que o CNAE não é educacional e, por isso, a análise não prosseguirá.
+2.  **CNAE não-educacional:** Se o CNAE principal da empresa não pertencer à lista de CNAEs de educação, a análise é interrompida e o CNPJ é reprovado.
 
 
 ### Classificação Final
