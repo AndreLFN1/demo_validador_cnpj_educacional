@@ -59,9 +59,13 @@ Para executar a interface gráfica do usuário (GUI), siga os passos:
 3.  Os resultados da análise serão exibidos na área de texto da janela.
 
 
-# Vídeo demonstrativo 
+# Vídeo demonstrativo (CLI)
 
 Obs: O tempo que o programa leva para entregar a resposta é de um pouco mais que 1 minuto. O vídeo a seguir foi cortado para demonstrar apenas o output. 
 
 https://github.com/user-attachments/assets/6074f944-5e47-4331-9975-daa60b673845
+
+GUI: 
+
+<img width="661" height="508" alt="image" src="https://github.com/user-attachments/assets/55282185-c33a-410b-bf2e-8d44ef8a7bce" />
 
