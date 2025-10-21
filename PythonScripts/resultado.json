@@ -1,13 +1,17 @@
 {
-  "cnpj": "33592510000154",
-  "razao_social": "VALE S.A.",
-  "classification": "REPROVADO",
-  "score": 0,
+  "cnpj": "34075739000184",
+  "razao_social": "SOCIEDADE DE ENSINO SUPERIOR ESTACIO DE SA LTDA",
+  "classification": "APROVADO",
+  "score": 100,
   "criteria": {
-    "positives": [],
-    "negatives": [
-      "CNAE principal (Extração de minério de ferro) não pertence ao setor educacional."
-    ]
+    "positives": [
+      "Situação cadastral da empresa é ATIVA.",
+      "CNAE principal (8531700 - Educação superior - graduação) está no setor de Educação (85.xx).",
+      "Capital Social de R$ 3.600.408.131,00, atingindo a pontuação máxima para o critério.",
+      "Tempo de atividade de 55 anos (desde 1970), indicando solidez e experiência.",
+      "Ausência de restrições cadastrais graves, conforme análise de negócio."
+    ],
+    "negatives": []
   },
-  "recommendation": "Reprovação automática por não ser uma instituição de ensino."
+  "recommendation": "A empresa é altamente recomendável. Sua robustez financeira, longa trajetória e alinhamento estratégico com um setor de alta prioridade a tornam um parceiro de extremo potencial e confiabilidade. O ponto de atenção sobre as datas futuras das mudanças societárias é menor e não compromete a excelente avaliação geral."
 }
