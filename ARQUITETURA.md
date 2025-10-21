@@ -281,6 +281,58 @@ Este projeto foi desenvolvido com o auxílio da ferramenta BMAD (Base Model Agen
 
 ---
 
+## 12. Desafios, Testes e Monitoramento
+
+Esta seção detalha os desafios técnicos previstos, a abordagem para garantir a qualidade do software e as estratégias para observar e monitorar o sistema em operação.
+
+### Principais Desafios Técnicos Antecipados
+
+1.  **Dependência de APIs Externas**: O sistema depende da API CNPJA e do Google Gemini. A instabilidade, mudanças nos contratos ou na disponibilidade dessas APIs são riscos.
+2.  **Qualidade dos Dados da Fonte**: A API CNPJA pode retornar dados incompletos, desatualizados ou com formatos inesperados, o que pode impactar a precisão da análise.
+3.  **Manutenção de Prompts (Prompt Engineering)**: A qualidade da análise dos agentes de IA depende diretamente da clareza e eficácia dos prompts. Manter e evoluir esses prompts para cobrir novos cenários e evitar "prompt drift" é um desafio contínuo.
+4.  **Gerenciamento de Custo e Performance do LLM**: O uso do Gemini tem um custo associado por token. É crucial otimizar os prompts e o fluxo de dados para manter a análise financeiramente viável e garantir que o tempo de resposta seja aceitável.
+
+### Estratégia de Testes e Validação
+
+Para garantir a confiabilidade e a precisão do sistema, a seguinte estratégia de testes será adotada:
+
+1.  **Testes Unitários**:
+    - **Componentes**: `validador_cnpj.py` e funções auxiliares puras.
+    - **Objetivo**: Garantir que as menores unidades de código funcionem como esperado.
+2.  **Testes de Integração**:
+    - **Componentes**: `main.py` e `analise_cnpj.py`.
+    - **Objetivo**: Validar a orquestração dos agentes e a comunicação entre eles, utilizando *mocks* para as APIs externas (CNPJA e Gemini) para isolar o fluxo interno.
+3.  **Testes de Contrato**:
+    - **Componentes**: Módulos que interagem com as APIs externas.
+    - **Objetivo**: Manter um conjunto de testes que verifica se o formato (contrato) das respostas das APIs não mudou. Falhas aqui indicam que a integração precisa ser ajustada.
+4.  **Validação de Regras de Negócio e IA**:
+    - **Golden Set**: Manter um conjunto de CNPJs de teste com resultados esperados (APROVADO, ATENÇÃO, REPROVADO, score, etc.).
+    - **Objetivo**: Executar periodicamente a análise sobre este "golden set" para:
+        - Validar que as regras de negócio automáticas estão corretas.
+        - Avaliar a performance e a consistência das respostas do LLM.
+
+### Observabilidade e Monitoramento
+
+1.  **Rastreabilidade (Traceability)**:
+    - **ID Único**: Cada análise de CNPJ gerará um ID único.
+    - **Logs Estruturados**: Todos os logs associados a uma análise (dados da API, prompts enviados, respostas do LLM, decisão de cada agente e resultado final) serão marcados com este ID.
+2.  **Logs e Métricas**:
+    - **Logs**:
+        - `INFO`: Início e fim de cada análise, decisão de cada agente.
+        - `ERROR`: Falhas em chamadas de API, respostas mal formatadas do LLM, erros inesperados.
+        - `DEBUG`: Conteúdo completo dos prompts e respostas das APIs (em ambiente de desenvolvimento).
+    - **Métricas Chave**:
+        - `tempo_analise_segundos`: Duração total da análise por CNPJ.
+        - `custo_analise_usd`: Custo estimado em dólares por análise, calculado a partir dos tokens usados.
+        - `erros_api_total`: Contador de falhas por tipo de API (CNPJA, Gemini).
+        - `classificacao_final_total`: Contadores para cada tipo de resultado (APROVADO, ATENÇÃO, REPROVADO).
+3.  **Identificação e Correção de Erros**:
+    - **Alertas**: Configurar alertas para picos na taxa de erros (`erros_api_total`) ou anomalias no tempo de análise.
+    - **Retentativas (Retries)**: Implementar uma política de retentativas com *exponential backoff* para as chamadas às APIs externas, tornando o sistema mais resiliente a falhas momentâneas.
+    - **Fallback**: Em caso de falha persistente do LLM, o sistema pode ser configurado para retornar um erro claro ou, se possível, uma análise parcial baseada apenas nas regras determinísticas.
+
+---
+
 **Autor:** Andre Luiz Ferreira do Nascimento
 **GitHub:** https://github.com/User/cnpj_educacional_demo
 **Data:** Outubro 2025

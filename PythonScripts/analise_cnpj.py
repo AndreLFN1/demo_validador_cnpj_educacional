@@ -1,3 +1,5 @@
+import time
+import logging
 import os
 import json
 import requests
@@ -11,7 +13,7 @@ def initialize_gemini():
     """
     gemini_api_key = os.getenv("GEMINI_API_KEY")
     if not gemini_api_key:
-        print("ERRO: GEMINI_API_KEY não encontrada no arquivo .env.")
+        logging.error("GEMINI_API_KEY não encontrada no arquivo .env.")
         return False
     genai.configure(api_key=gemini_api_key)
     return True
@@ -36,28 +38,40 @@ def interact_with_gemini(prompt: str, context_data: dict) -> str | None:
         else:
             return None
     except genai.types.BlockedPromptException:
-        print("ERRO: O conteúdo do prompt foi bloqueado pelo Gemini.")
+        logging.error("O conteúdo do prompt foi bloqueado pelo Gemini.")
         return None
     except Exception as e:
-        print(f"ERRO ao interagir com o Gemini: {e}")
+        logging.error(f"ERRO ao interagir com o Gemini: {e}")
         return None
 
 # Fim das Funções de Interação com Gemini
 
+MAX_RETRIES = 3
+RETRY_DELAY = 2  # segundos
+
 def fetch_cnpj_data(cnpj: str) -> dict | None:
     """
-    Consulta os dados de um CNPJ na API CNPJA.
+    Consulta os dados de um CNPJ na API CNPJA com retentativas.
     """
     api_key = os.getenv("CNPJA_API_KEY")
     url = f"https://open.cnpja.com/office/{cnpj}"
     headers = {
         "Authorization": api_key}
 
-    response = requests.get(url, headers=headers)
-    if response.status_code == 200:
-        return response.json()
-    else:   
-        return None
+    for attempt in range(MAX_RETRIES):
+        try:
+            logging.info(f"Tentativa {attempt + 1}/{MAX_RETRIES} de buscar dados para o CNPJ {cnpj}...")
+            response = requests.get(url, headers=headers, timeout=10) # Adicionado timeout
+            response.raise_for_status() # Levanta HTTPError para códigos de status 4xx/5xx
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            logging.warning(f"Erro na tentativa {attempt + 1}/{MAX_RETRIES} para CNPJ {cnpj}: {e}")
+            if attempt < MAX_RETRIES - 1:
+                time.sleep(RETRY_DELAY * (2 ** attempt)) # Backoff exponencial
+            else:
+                logging.error(f"Falha ao buscar dados para o CNPJ {cnpj} após {MAX_RETRIES} tentativas.")
+                return None
+    return None
 
 def analyze_business_criteria(company_data: dict) -> dict | None:
     """
@@ -70,7 +84,7 @@ def analyze_business_criteria(company_data: dict) -> dict | None:
         with open(business_agent_path, 'r', encoding='utf-8') as f:
             business_agent_prompt = f.read()
     except FileNotFoundError:
-        print(f"ERRO: Arquivo de prompt do agente de negócio não encontrado em {business_agent_path}")
+        logging.error(f"Arquivo de prompt do agente de negócio não encontrado em {business_agent_path}")
         return None
 
     cnae_education_path = os.path.join(os.path.dirname(__file__), '..', 'config', 'cnae_educacao.json')
@@ -78,10 +92,10 @@ def analyze_business_criteria(company_data: dict) -> dict | None:
         with open(cnae_education_path, 'r', encoding='utf-8') as f:
             cnae_education_data = json.load(f)
     except FileNotFoundError:
-        print(f"ERRO: Arquivo de CNAE de educação não encontrado em {cnae_education_path}")
+        logging.error(f"Arquivo de CNAE de educação não encontrado em {cnae_education_path}")
         return None
     except json.JSONDecodeError:
-        print(f"ERRO: Erro ao decodificar JSON do arquivo {cnae_education_path}")
+        logging.error(f"Erro ao decodificar JSON do arquivo {cnae_education_path}")
         return None
 
     gemini_context_data = {
@@ -92,7 +106,7 @@ def analyze_business_criteria(company_data: dict) -> dict | None:
     # Regra de Desqualificação Automática
     registration_status = company_data.get("status", {}).get("text", "").upper()
     if registration_status in ["SUSPENSA", "BAIXADA"]:
-        print(f"CNPJ com situação cadastral {registration_status} detectada. Desqualificação automática.")
+        logging.info(f"CNPJ com situação cadastral {registration_status} detectada. Desqualificação automática.")
         return {
             "classificacao": "REPROVADO",
             "score": 0,
@@ -114,7 +128,7 @@ def analyze_business_criteria(company_data: dict) -> dict | None:
                 valid_cnae_ids.append(int(normalized_cnae))
         
         if primary_cnae_id not in valid_cnae_ids:
-            print(f"CNAE principal '{primary_cnae_text}' ({primary_cnae_id}) não pertence ao setor educacional. Desqualificação automática.")
+            logging.info(f"CNAE principal '{primary_cnae_text}' ({primary_cnae_id}) não pertence ao setor educacional. Desqualificação automática.")
             return {
                 "classificacao": "REPROVADO",
                 "score": 0,
@@ -127,7 +141,7 @@ def analyze_business_criteria(company_data: dict) -> dict | None:
     gemini_response_text = interact_with_gemini(business_agent_prompt, gemini_context_data)
 
     if not gemini_response_text:
-        print("ERRO: Gemini não retornou uma resposta para a análise de negócio.")
+        logging.error("Gemini não retornou uma resposta para a análise de negócio.")
         return None
 
     try:
@@ -140,7 +154,7 @@ def analyze_business_criteria(company_data: dict) -> dict | None:
         else:
             return {"analise_bruta": gemini_response_text}
     except json.JSONDecodeError:
-        print(f"AVISO: Gemini não retornou um JSON válido. Resposta bruta: {gemini_response_text[:200]}...")
+        logging.warning(f"Gemini não retornou um JSON válido. Resposta bruta: {gemini_response_text[:200]}...")
         return {"analise_bruta": gemini_response_text}
 
 def analyze_scoring(company_data: dict, business_analysis: dict) -> dict | None:
@@ -152,7 +166,7 @@ def analyze_scoring(company_data: dict, business_analysis: dict) -> dict | None:
         with open(scoring_agent_path, 'r', encoding='utf-8') as f:
             scoring_agent_prompt = f.read()
     except FileNotFoundError:
-        print(f"ERRO: Arquivo de prompt do agente de scoring não encontrado em {scoring_agent_path}")
+        logging.error(f"Arquivo de prompt do agente de scoring não encontrado em {scoring_agent_path}")
         return None
 
     gemini_context_data = {
@@ -178,7 +192,7 @@ def analyze_scoring(company_data: dict, business_analysis: dict) -> dict | None:
     gemini_response_text = interact_with_gemini(scoring_agent_prompt, gemini_context_data)
 
     if not gemini_response_text:
-        print("ERRO: Gemini não retornou uma resposta para a análise de scoring.")
+        logging.error("Gemini não retornou uma resposta para a análise de scoring.")
         return None
 
     try:
@@ -191,6 +205,6 @@ def analyze_scoring(company_data: dict, business_analysis: dict) -> dict | None:
         else:
             return {"analise_bruta": gemini_response_text}
     except json.JSONDecodeError:
-        print(f"AVISO: Gemini não retornou um JSON válido para scoring. Resposta bruta: {gemini_response_text[:200]}...")
+        logging.warning(f"Gemini não retornou um JSON válido para scoring. Resposta bruta: {gemini_response_text[:200]}...")
         return {"analise_bruta": gemini_response_text}
 

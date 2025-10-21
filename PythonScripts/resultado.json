@@ -5,13 +5,13 @@
   "score": 100,
   "criteria": {
     "positives": [
-      "Situação cadastral da empresa é ATIVA.",
-      "CNAE principal (8531700 - Educação superior - graduação) está no setor de Educação (85.xx).",
-      "Capital Social de R$ 3.600.408.131,00, atingindo a pontuação máxima para o critério.",
-      "Tempo de atividade de 55 anos (desde 1970), indicando solidez e experiência.",
-      "Ausência de restrições cadastrais graves, conforme análise de negócio."
+      "Empresa com status 'Ativa', indicando solidez operacional e conformidade.",
+      "Atividade principal (CNAE 8531700 - Educação superior - graduação) está no setor de Educação (85.xx), conforme critério.",
+      "Capital social de R$ 3.600.408.131,00, categorizado na faixa mais alta, demonstrando robustez financeira.",
+      "Tempo de atividade no mercado superior a 55 anos, indicando grande experiência e estabilidade.",
+      "Nenhuma restrição grave ou ponto fraco foi identificado nos critérios de scoring fornecidos."
     ],
     "negatives": []
   },
-  "recommendation": "A empresa é altamente recomendável. Sua robustez financeira, longa trajetória e alinhamento estratégico com um setor de alta prioridade a tornam um parceiro de extremo potencial e confiabilidade. O ponto de atenção sobre as datas futuras das mudanças societárias é menor e não compromete a excelente avaliação geral."
+  "recommendation": "A empresa está APROVADA com um score excelente. Recomenda-se prosseguir com a diligência, com foco na compreensão das recentes alterações na equipe administrativa (múltiplas mudanças societárias em 2025) para garantir a estabilidade gerencial e estratégica."
 }

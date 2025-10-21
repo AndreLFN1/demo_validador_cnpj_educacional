@@ -20,13 +20,17 @@ Certifique-se de ter o Python 3.11+ e o pip instalados em seu sistema.
 
 ## Configuração
 
-Crie um arquivo `.env` na raiz do projeto, baseado no `.env.example`, e preencha com suas chaves de API:
+Para que o sistema funcione corretamente, é necessário configurar as chaves de API.
+
+1.  **Crie o arquivo `.env`**: Na **raiz do projeto** (o mesmo diretório onde está o `README.md`), crie um arquivo chamado `.env`. Você pode usar o arquivo `.env.example` como modelo.
+2.  **Preencha as chaves**: Abra o arquivo `.env` e adicione suas chaves de API, conforme o exemplo abaixo:
 
 ```
 GEMINI_API_KEY="SUA_CHAVE_API_GEMINI"
 CNPJA_API_KEY="SUA_CHAVE_API_CNPJA"
 LLM_MODEL="gemini-1.5-pro-latest" # Ou outro modelo Gemini de sua preferência
 ```
+**Importante**: Certifique-se de que este arquivo `.env` esteja localizado diretamente na raiz do projeto para que o sistema possa carregá-lo.
 
 ## Como Usar (CLI)
 

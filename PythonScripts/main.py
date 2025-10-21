@@ -1,3 +1,4 @@
+import logging
 import json
 import os
 import sys
@@ -7,40 +8,40 @@ from analise_cnpj import fetch_cnpj_data, analyze_business_criteria, analyze_sco
 
 def process_cnpj(cnpj_valido: str):
     """Processa um único CNPJ válido."""
-    print(f"SUCESSO: O CNPJ {format_cnpj(cnpj_valido)} é válido.")
+    logging.info(f"O CNPJ {format_cnpj(cnpj_valido)} é válido.")
     
-    print("Buscando dados na API...")
+    logging.info("Buscando dados na API...")
     company_data = fetch_cnpj_data(cnpj_valido)
 
     if not company_data:
-        print("ERRO: Não foi possível obter os dados da API para este CNPJ.")
+        logging.error("Não foi possível obter os dados da API para este CNPJ.")
         return
 
-    print("Dados da empresa encontrados.")
+    logging.info("Dados da empresa encontrados.")
 
     # Análise de Negócio (CNAE)
-    print("Analisando CNAE...")
+    logging.info("Analisando CNAE...")
     business_result = analyze_business_criteria(company_data)
 
     if not business_result:
-        print("ERRO: Não foi possível obter a análise de negócio da empresa.")
+        logging.error("Não foi possível obter a análise de negócio da empresa.")
         return
 
     # Verifica se houve desqualificação automática na análise de negócio
     if business_result.get("classificacao") == "REPROVADO":
-        print("Análise concluída com desqualificação automática.")
+        logging.info("Análise concluída com desqualificação automática.")
         scoring_result = business_result  # Pula a etapa de scoring
     else:
-        print("Análise de negócio concluída.")
+        logging.info("Análise de negócio concluída.")
         # Análise de Scoring
-        print("Analisando Scoring...")
+        logging.info("Analisando Scoring...")
         scoring_result = analyze_scoring(company_data, business_result)
 
         if not scoring_result:
-            print("ERRO: Não foi possível obter o scoring da empresa.")
+            logging.error("Não foi possível obter o scoring da empresa.")
             return
         
-        print("Análise de scoring concluída.")
+        logging.info("Análise de scoring concluída.")
 
     # Saída Final
     print("\n=== ANÁLISE DE CNPJ ===")
@@ -74,24 +75,30 @@ def process_cnpj(cnpj_valido: str):
     output_path = os.path.join(os.path.dirname(__file__), 'resultado.json')
     with open(output_path, 'w', encoding='utf-8') as f:
         json.dump(output_data, f, indent=2, ensure_ascii=False)
-    print("\nResultado salvo em resultado.json")
+    logging.info("Resultado salvo em resultado.json")
 
 def main():
     """Função principal que executa o programa."""
-    load_dotenv()
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+    current_script_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.abspath(os.path.join(current_script_dir, '..'))
+    dotenv_path = os.path.join(project_root, '.env')
+    logging.info(f"Caminho do .env sendo procurado: {dotenv_path}")
+    load_dotenv(dotenv_path)
+    logging.info(f"GEMINI_API_KEY carregada: {bool(os.getenv("GEMINI_API_KEY"))}")
+    logging.info(f"CNPJA_API_KEY carregada: {bool(os.getenv("CNPJA_API_KEY"))}")
     if not os.getenv("GEMINI_API_KEY") or not os.getenv("CNPJA_API_KEY"):
-        print("ERRO: As chaves de API (GEMINI_API_KEY, CNPJA_API_KEY) não foram encontradas.")
-        print("Verifique se o arquivo .env existe e está configurado corretamente.")
+        logging.error("As chaves de API (GEMINI_API_KEY, CNPJA_API_KEY) não foram encontradas. Verifique se o arquivo .env existe e está configurado corretamente.")
         sys.exit(1)
         
-    print("--- Validador e Analisador de CNPJ ---")
-    print("Digite um CNPJ para validar ou 'sair' para terminar.")
+    logging.info("--- Validador e Analisador de CNPJ ---")
+    logging.info("Digite um CNPJ para validar ou 'sair' para terminar.")
 
     while True:
         cnpj_input = input("> ")
 
         if cnpj_input.lower() == 'sair':
-            print("Encerrando o programa.")
+            logging.info("Encerrando o programa.")
             break
 
         valid_cnpj = validate_cnpj(cnpj_input)
@@ -99,9 +106,9 @@ def main():
         if valid_cnpj:
             process_cnpj(valid_cnpj)
         else:
-            print(f"ERRO: O CNPJ '{cnpj_input}' é inválido.")
+            logging.error(f"O CNPJ '{cnpj_input}' é inválido.")
         
-        print("-" * 30)
+        logging.info("-" * 30)
 
 if __name__ == "__main__":
     main()
