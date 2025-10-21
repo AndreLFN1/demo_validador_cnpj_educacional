@@ -47,6 +47,8 @@ def process_cnpj(cnpj_valido: str):
     print(f"CNPJ: {format_cnpj(cnpj_valido)}")
     print(f"Razão Social: {company_data.get('company', {}).get('name', 'N/A')}")
     print(f"\n✅ RESULTADO: {scoring_result.get('classificacao', 'N/A')}")
+    if scoring_result.get('classificacao') == "REPROVADO":
+        print("ATENÇÃO: Este CNPJ foi reprovado. Verifique os pontos negativos e a recomendação.")
     print(f"📊 Score: {scoring_result.get('score', 'N/A')}/100")
 
     print("\nPontos Positivos:")

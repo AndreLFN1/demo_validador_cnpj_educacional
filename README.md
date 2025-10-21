@@ -47,6 +47,18 @@ Para executar o programa e analisar um CNPJ, siga os passos:
 <img width="380" height="573" alt="image" src="https://github.com/user-attachments/assets/35507d9a-12c2-41cb-b957-eb3c05b912fb" />
 
 
+## Como Usar (GUI)
+
+Para executar a interface gráfica do usuário (GUI), siga os passos:
+
+1.  Execute o script da GUI:
+    ```bash
+    python PythonScripts/gui.py
+    ```
+2.  Uma janela será aberta. Digite o CNPJ no campo indicado e clique em "Analisar CNPJ".
+3.  Os resultados da análise serão exibidos na área de texto da janela.
+
+
 # Vídeo demonstrativo 
 
 Obs: O tempo que o programa leva para entregar a resposta é de um pouco mais que 1 minuto. O vídeo a seguir foi cortado para demonstrar apenas o output. 
