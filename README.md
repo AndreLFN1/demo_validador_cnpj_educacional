@@ -67,5 +67,7 @@ https://github.com/user-attachments/assets/6074f944-5e47-4331-9975-daa60b673845
 
 GUI: 
 
-<img width="661" height="508" alt="image" src="https://github.com/user-attachments/assets/55282185-c33a-410b-bf2e-8d44ef8a7bce" />
+<img width="655" height="506" alt="image" src="https://github.com/user-attachments/assets/5d97d384-106a-4901-b550-51e06052aa46" />
+
+
 
