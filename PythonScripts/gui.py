@@ -16,7 +16,7 @@ load_dotenv() # Carrega as variáveis de ambiente
 class CNPJAnalyzerGUI:
     def __init__(self, master):
         self.master = master
-        master.title("Analisador de CNPJ")
+        master.title("Analisador de CNPJ - B2B Principia")
 
         # Frame para o input do CNPJ
         self.cnpj_frame = tk.Frame(master)
@@ -107,11 +107,14 @@ class CNPJAnalyzerGUI:
             self._enable_ui()
 
     def _enable_ui(self):
-        self.master.after(0, lambda: self.analyze_button.config(state=tk.NORMAL))
-        self.master.after(0, lambda: self.cnpj_entry.config(state=tk.NORMAL))
-        self.master.after(0, lambda: self.status_label.config(text="Análise Concluída.", fg="green"))
+        if self.master.winfo_exists(): # Verifica se a janela principal ainda existe
+            self.master.after(0, lambda: self.analyze_button.config(state=tk.NORMAL))
+            self.master.after(0, lambda: self.cnpj_entry.config(state=tk.NORMAL))
+            self.master.after(0, lambda: self.status_label.config(text="Análise Concluída.", fg="green"))
 
     def display_message(self, message, is_error=False):
+        if not self.master.winfo_exists(): # Verifica se a janela principal ainda existe
+            return
         # Usar master.after para garantir que as atualizações da GUI ocorram na thread principal
         def _update_message():
             self.result_text.config(state=tk.NORMAL)
@@ -125,6 +128,8 @@ class CNPJAnalyzerGUI:
         self.master.after(0, _update_message)
 
     def display_results(self, cnpj, company_data, final_analysis):
+        if not self.master.winfo_exists(): # Verifica se a janela principal ainda existe
+            return
         def _update_results():
             self.result_text.config(state=tk.NORMAL)
             self.result_text.insert(tk.END, "\n=== RESULTADO DA ANÁLISE ===\n")
