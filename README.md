@@ -49,10 +49,7 @@ Para executar o programa e analisar um CNPJ, siga os passos:
 
 # Vídeo demonstrativo 
 
+Obs: O tempo que o programa leva para entregar a resposta é de um pouco mais que 1 minuto. O vídeo a seguir foi cortado para demonstrar apenas o output. 
 
-
-https://github.com/user-attachments/assets/aa117da4-c2b7-487e-a053-4588a882ff55
-
-
-
+https://github.com/user-attachments/assets/6074f944-5e47-4331-9975-daa60b673845
 
