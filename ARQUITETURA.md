@@ -127,6 +127,7 @@ PythonScripts/
 ├── main.py                    # CLI principal, orquestra os agentes
 ├── validador_cnpj.py          # Valida dígitos verificadores do CNPJ
 ├── analise_cnpj.py            # Contém a lógica dos 3 agentes (Cadastral, Negócio, Scoring)
+├── gui.py                     # Interface Gráfica do Usuário (GUI)
 ├── config/
 │   ├── agente_negocio_cnpj.txt  # Prompt para o Agente de Negócio (Gemini)
 │   ├── agente_scoring_cnpj.txt  # Prompt para o Agente de Scoring (Gemini)
@@ -142,11 +143,11 @@ PythonScripts/
 
 ## 6. Fluxo de Execução (Implementado)
 
-1. Usuário executa: `python PythonScripts/main.py`
+1. Usuário executa: `python PythonScripts/main.py` (CLI) ou `python PythonScripts/gui.py` (GUI).
 2. O sistema verifica as chaves de API e inicializa.
-3. Pede para o usuário digitar o CNPJ.
-4. `main.py` chama `validate_cnpj()` de `validador_cnpj.py` para validar o CNPJ.
-5. Se válido, `main.py` chama `process_cnpj()` que orquestra a análise:
+3. Se CLI, pede para o usuário digitar o CNPJ. Se GUI, o usuário insere no campo apropriado.
+4. `main.py` (ou a lógica da GUI) chama `validate_cnpj()` de `validador_cnpj.py` para validar o CNPJ.
+5. Se válido, `main.py` (ou a lógica da GUI) chama `process_cnpj()` que orquestra a análise:
    a. `fetch_cnpj_data()`: Consulta a API CNPJA para obter os dados da empresa.
    b. `analyze_business_criteria()`: Antes de chamar o LLM, o sistema aplica **regras de desqualificação automática**:
       - Verifica a **situação cadastral**. Se estiver `SUSPENSA` ou `BAIXADA`, a análise para.
@@ -231,7 +232,6 @@ A seguir, uma análise das ideias propostas para a evolução do projeto, focand
 | **3. Salvar cada consulta em CSV** | **Alta** | **Alto** | **Ponto de partida ideal.** Base para as ideias 2, 4, 5 e 9. Garante que nenhum dado seja perdido. |
 | **4. Avaliação de CNPJ's em lote via CSV** | **Alta** | **Muito Alto** | Aumenta drasticamente a eficiência. O valor percebido da ferramenta cresce exponencialmente. |
 | **5. Comparação entre CNPJ's** | **Média** | **Muito Alto** | Ajuda na decisão estratégica. Criar uma tabela comparativa como output (score, capital, etc.). |
-| **6. Criar uma GUI (Interface Gráfica)** | **Baixa** | **Alto** | Projeto grande (PySimpleGUI, Flask). Melhora a usabilidade, mas exige esforço considerável. |
 | **7. Sistema de senha para edição** | **Média** | **Baixo** | Complexo para o benefício atual. Alternativa: permissões de arquivo ou implementar na GUI (ideia 6). |
 | **8. Input manual de considerações** | **Alta** | **Médio** | Simples de adicionar. Enriquece a análise com dados qualitativos que a API não captura. |
 | **9. Integração com Metabase/Databricks** | **Média** | **Muito Alto** | Transforma a ferramenta em um motor de BI. Passo avançado para escalar o valor dos dados. |
