@@ -69,9 +69,14 @@ Obs: O tempo que o programa leva para entregar a resposta é de um pouco mais qu
 
 https://github.com/user-attachments/assets/6074f944-5e47-4331-9975-daa60b673845
 
-GUI: 
+## Print demonstrativo GUI: 
 
 <img width="651" height="501" alt="image" src="https://github.com/user-attachments/assets/509be65a-0e36-4eef-9ac2-0a99d75ed6a0" />
+
+
+## Fluxograma completo do funcionamento do programa
+
+<img width="4862" height="5364" alt="Mermaid-Analise_CNPJ" src="https://github.com/user-attachments/assets/41efed45-0e11-41cf-b8b6-80ba4f9ca8c4" />
 
 
 
